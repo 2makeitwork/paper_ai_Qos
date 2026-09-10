@@ -1,0 +1,479 @@
+[
+ {
+  "id": "byok-model-01",
+  "provider": "bailian",
+  "providerDisplayName": "Alibaba Cloud Model Studio",
+  "model": "qwen3.8-max-tp",
+  "displayName": "Qwen-3.8-Max",
+  "description": "",
+  "visible": true,
+  "hasApiKey": true,
+  "is_vl": true,
+  "is_reasoning": true,
+  "max_input_tokens": 1000000,
+  "contextConfig": {
+   "1m": {
+    "label": "1M",
+    "tokenCount": 1000000
+   },
+   "200k": {
+    "label": "200K",
+    "tokenCount": 200000,
+    "isDefault": true
+   },
+   "400k": {
+    "label": "400K",
+    "tokenCount": 400000
+   }
+  },
+  "thinkingConfig": {
+   "disabled": {
+    "label": "Off"
+   },
+   "enabled": {
+    "label": "On",
+    "isDefault": true,
+    "efforts": {
+     "low": {
+      "label": "low"
+     },
+     "medium": {
+      "label": "medium"
+     },
+     "xhigh": {
+      "label": "xhigh",
+      "isDefault": true
+     }
+    }
+   }
+  },
+  "byokTypeKey": "tp",
+  "createTime": 1788227103194,
+  "updateTime": 1788829632748
+ },
+ {
+  "id": "byok-model-03",
+  "provider": "bailian",
+  "providerDisplayName": "Alibaba Cloud Model Studio",
+  "model": "qwen3.8-flash-tp",
+  "displayName": "Qwen-3.8-Flash",
+  "description": "",
+  "visible": true,
+  "hasApiKey": true,
+  "is_vl": true,
+  "is_reasoning": true,
+  "max_input_tokens": 1000000,
+  "contextConfig": {
+   "1m": {
+    "label": "1M",
+    "tokenCount": 1000000
+   },
+   "200k": {
+    "label": "200K",
+    "tokenCount": 200000,
+    "isDefault": true
+   },
+   "400k": {
+    "label": "400K",
+    "tokenCount": 400000
+   }
+  },
+  "thinkingConfig": {
+   "disabled": {
+    "label": "Off"
+   },
+   "enabled": {
+    "label": "On",
+    "isDefault": true,
+    "efforts": {
+     "low": {
+      "label": "low"
+     },
+     "medium": {
+      "label": "medium"
+     },
+     "xhigh": {
+      "label": "xhigh",
+      "isDefault": true
+     }
+    }
+   }
+  },
+  "byokTypeKey": "tp",
+  "createTime": 1788758076442
+ },
+ {
+  "id": "byok-model-04",
+  "provider": "bailian",
+  "providerDisplayName": "Alibaba Cloud Model Studio",
+  "model": "qwen3.8-flash-pg",
+  "displayName": "Qwen-3.8-Flash",
+  "description": "",
+  "visible": false,
+  "hasApiKey": true,
+  "is_vl": true,
+  "is_reasoning": true,
+  "max_input_tokens": 1000000,
+  "contextConfig": {
+   "1m": {
+    "label": "1M",
+    "tokenCount": 1000000
+   },
+   "200k": {
+    "label": "200K",
+    "tokenCount": 200000,
+    "isDefault": true
+   },
+   "400k": {
+    "label": "400K",
+    "tokenCount": 400000
+   }
+  },
+  "thinkingConfig": {
+   "disabled": {
+    "label": "Off"
+   },
+   "enabled": {
+    "label": "On",
+    "isDefault": true,
+    "efforts": {
+     "low": {
+      "label": "low"
+     },
+     "medium": {
+      "label": "medium"
+     },
+     "xhigh": {
+      "label": "xhigh",
+      "isDefault": true
+     }
+    }
+   }
+  },
+  "byokTypeKey": "pg",
+  "createTime": 1788833463651,
+  "updateTime": 1788844550523
+ },
+ {
+  "id": "byok-model-05",
+  "provider": "bailian",
+  "providerDisplayName": "Alibaba Cloud Model Studio",
+  "model": "qwen3.8-max-pg",
+  "displayName": "Qwen-3.8-Max",
+  "description": "",
+  "visible": false,
+  "hasApiKey": true,
+  "is_vl": true,
+  "is_reasoning": true,
+  "max_input_tokens": 1000000,
+  "contextConfig": {
+   "1m": {
+    "label": "1M",
+    "tokenCount": 1000000
+   },
+   "200k": {
+    "label": "200K",
+    "tokenCount": 200000,
+    "isDefault": true
+   },
+   "400k": {
+    "label": "400K",
+    "tokenCount": 400000
+   }
+  },
+  "thinkingConfig": {
+   "disabled": {
+    "label": "Off"
+   },
+   "enabled": {
+    "label": "On",
+    "isDefault": true,
+    "efforts": {
+     "low": {
+      "label": "low"
+     },
+     "medium": {
+      "label": "medium"
+     },
+     "xhigh": {
+      "label": "xhigh",
+      "isDefault": true
+     }
+    }
+   }
+  },
+  "byokTypeKey": "pg",
+  "createTime": 1788833463656,
+  "updateTime": 1788844549020
+ },
+ {
+  "id": "byok-model-06",
+  "provider": "bailian",
+  "providerDisplayName": "Alibaba Cloud Model Studio",
+  "model": "qwen3.7-max-pg",
+  "displayName": "Qwen-3.7-Max",
+  "description": "",
+  "visible": false,
+  "hasApiKey": true,
+  "is_vl": false,
+  "is_reasoning": true,
+  "max_input_tokens": 1000000,
+  "contextConfig": {
+   "1m": {
+    "label": "1M",
+    "tokenCount": 1000000
+   },
+   "200k": {
+    "label": "200K",
+    "tokenCount": 200000,
+    "isDefault": true
+   },
+   "400k": {
+    "label": "400K",
+    "tokenCount": 400000
+   }
+  },
+  "thinkingConfig": {
+   "enabled": {
+    "label": "On",
+    "isDefault": true
+   }
+  },
+  "byokTypeKey": "pg",
+  "createTime": 1788833463689,
+  "updateTime": 1788844547796
+ },
+ {
+  "id": "byok-model-07",
+  "provider": "bailian",
+  "providerDisplayName": "Alibaba Cloud Model Studio",
+  "model": "glm5.2-pg",
+  "displayName": "GLM-5.2",
+  "description": "",
+  "visible": false,
+  "hasApiKey": true,
+  "is_vl": false,
+  "is_reasoning": true,
+  "max_input_tokens": 1000000,
+  "contextConfig": {
+   "1m": {
+    "label": "1M",
+    "tokenCount": 1000000
+   },
+   "200k": {
+    "label": "200K",
+    "tokenCount": 200000,
+    "isDefault": true
+   },
+   "400k": {
+    "label": "400K",
+    "tokenCount": 400000
+   }
+  },
+  "thinkingConfig": {
+   "enabled": {
+    "label": "On",
+    "isDefault": true
+   }
+  },
+  "byokTypeKey": "pg",
+  "createTime": 1788833463761,
+  "updateTime": 1788844540742
+ },
+ {
+  "id": "byok-model-08",
+  "provider": "bailian",
+  "providerDisplayName": "Alibaba Cloud Model Studio",
+  "model": "deepseek-v4-pro-pg",
+  "displayName": "DeepSeek-V4-Pro",
+  "description": "",
+  "visible": false,
+  "hasApiKey": true,
+  "is_vl": false,
+  "is_reasoning": true,
+  "max_input_tokens": 1000000,
+  "contextConfig": {
+   "1m": {
+    "label": "1M",
+    "tokenCount": 1000000
+   },
+   "200k": {
+    "label": "200K",
+    "tokenCount": 200000,
+    "isDefault": true
+   },
+   "400k": {
+    "label": "400K",
+    "tokenCount": 400000
+   }
+  },
+  "thinkingConfig": {
+   "disabled": {
+    "label": "Off"
+   },
+   "enabled": {
+    "label": "On",
+    "isDefault": true,
+    "efforts": {
+     "high": {
+      "label": "high"
+     },
+     "max": {
+      "label": "max",
+      "isDefault": true
+     }
+    }
+   }
+  },
+  "byokTypeKey": "pg",
+  "createTime": 1788833463764,
+  "updateTime": 1788844541663
+ },
+ {
+  "id": "byok-model-09",
+  "provider": "bailian",
+  "providerDisplayName": "Alibaba Cloud Model Studio",
+  "model": "deepseek-v4-pro-0813-pg",
+  "displayName": "DeepSeek-V4-Pro-0813",
+  "description": "",
+  "visible": false,
+  "hasApiKey": true,
+  "is_vl": false,
+  "is_reasoning": true,
+  "max_input_tokens": 1000000,
+  "contextConfig": {
+   "1m": {
+    "label": "1M",
+    "tokenCount": 1000000
+   },
+   "200k": {
+    "label": "200K",
+    "tokenCount": 200000,
+    "isDefault": true
+   },
+   "400k": {
+    "label": "400K",
+    "tokenCount": 400000
+   }
+  },
+  "thinkingConfig": {
+   "disabled": {
+    "label": "Off"
+   },
+   "enabled": {
+    "label": "On",
+    "isDefault": true,
+    "efforts": {
+     "high": {
+      "label": "high"
+     },
+     "max": {
+      "label": "max",
+      "isDefault": true
+     }
+    }
+   }
+  },
+  "byokTypeKey": "pg",
+  "createTime": 1788833463767,
+  "updateTime": 1788844542531
+ },
+ {
+  "id": "byok-model-10",
+  "provider": "bailian",
+  "providerDisplayName": "Alibaba Cloud Model Studio",
+  "model": "deepseek-v4-flash-pg",
+  "displayName": "DeepSeek-V4-Flash",
+  "description": "",
+  "visible": false,
+  "hasApiKey": true,
+  "is_vl": false,
+  "is_reasoning": true,
+  "max_input_tokens": 1000000,
+  "contextConfig": {
+   "1m": {
+    "label": "1M",
+    "tokenCount": 1000000
+   },
+   "200k": {
+    "label": "200K",
+    "tokenCount": 200000,
+    "isDefault": true
+   },
+   "400k": {
+    "label": "400K",
+    "tokenCount": 400000
+   }
+  },
+  "thinkingConfig": {
+   "disabled": {
+    "label": "Off"
+   },
+   "enabled": {
+    "label": "On",
+    "isDefault": true,
+    "efforts": {
+     "high": {
+      "label": "high"
+     },
+     "max": {
+      "label": "max",
+      "isDefault": true
+     }
+    }
+   }
+  },
+  "byokTypeKey": "pg",
+  "createTime": 1788833463789,
+  "updateTime": 1788844543675
+ },
+ {
+  "id": "byok-model-11",
+  "provider": "bailian",
+  "providerDisplayName": "Alibaba Cloud Model Studio",
+  "model": "deepseek-v4-flash-0731-pg",
+  "displayName": "DeepSeek-V4-Flash-0731",
+  "description": "",
+  "visible": false,
+  "hasApiKey": true,
+  "is_vl": false,
+  "is_reasoning": true,
+  "max_input_tokens": 1000000,
+  "contextConfig": {
+   "1m": {
+    "label": "1M",
+    "tokenCount": 1000000
+   },
+   "200k": {
+    "label": "200K",
+    "tokenCount": 200000,
+    "isDefault": true
+   },
+   "400k": {
+    "label": "400K",
+    "tokenCount": 400000
+   }
+  },
+  "thinkingConfig": {
+   "disabled": {
+    "label": "Off"
+   },
+   "enabled": {
+    "label": "On",
+    "isDefault": true,
+    "efforts": {
+     "high": {
+      "label": "high"
+     },
+     "max": {
+      "label": "max",
+      "isDefault": true
+     }
+    }
+   }
+  },
+  "byokTypeKey": "pg",
+  "createTime": 1788833463792,
+  "updateTime": 1788844545487
+ }
+]

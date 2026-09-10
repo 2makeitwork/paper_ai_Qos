@@ -1,0 +1,46 @@
+{
+  "title": "AI Service QoS \u2014 request-level field evidence, Case Study 1 (Qwen3.8-Max / Qoder CN)",
+  "upload_type": "dataset",
+  "creators": [
+    {
+      "name": "2makeitwork"
+    }
+  ],
+  "description": "<p>This is the archived snapshot of the request-level evidence behind <b>AI Service QoS \u2014 Independent Measurement of What Users Actually Receive</b> (methodology v0.1): one submitted user request per row, its outcome class, its latency on two clocks, the provider's own error strings kept verbatim, and the anonymised client log lines each figure was derived from. Two collection rounds, kept separate and labelled: 2026-09-01 to 2026-09-09 (20 conversations, 33 timeout events) and 2026-09-10 (62 request episodes from 55 submitted prompts, with per-request context occupancy). The work is a client-side measurement of the service quality an artificial-intelligence service delivers under real user workloads; it does not benchmark the model and does not audit the provider. Every published figure is re-derivable: the bundle ships <code>scripts/analyze.py</code>, which asserts each number, and <code>scripts/verify_dataset_card.py</code>, which asserts the card against the files. Text and data are Creative Commons Attribution 4.0; the executable tooling in the source repository is MIT \u2014 Zenodo holds one licence field, so it declares the licence of what is archived here.</p>",
+  "publication_date": "2026-09-10",
+  "license": {
+    "id": "cc-by-4.0"
+  },
+  "version": "methodology v0.1",
+  "language": "eng",
+  "keywords": [
+    "quality of service",
+    "AI service reliability",
+    "large language models",
+    "agent workloads",
+    "timeout",
+    "context window",
+    "request-level measurement",
+    "observability",
+    "field study"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://huggingface.co/datasets/2makeitwork/paper_ai_Qos",
+      "relation": "isIdenticalTo",
+      "resource_type": "dataset"
+    },
+    {
+      "identifier": "https://github.com/2makeitwork/paper_ai_Qos",
+      "relation": "isSupplementTo",
+      "resource_type": "software"
+    }
+  ],
+  "notes": "Single-licence field, dual-licensed repository: cc-by-4.0 covers the text, tables and evidence archived here; scripts/ and tools/ in the source repository remain MIT (see LICENSE, LICENSE-content.md, LICENSE-code.md). Cite the snapshot, name the collection round and give the client version, not only the model name.",
+  "_fill_in_before_deposit": [
+    "creators[].affiliation if you want one",
+    "Zenodo concept DOI of this project once the first record exists",
+    "arXiv identifier if that channel is ever taken (it is optional by decision)",
+    "the exact GitHub tag/release the software route will archive"
+  ]
+}

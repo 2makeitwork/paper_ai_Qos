@@ -1,0 +1,5 @@
+aicoding.modelSelector.runtimeConfig.assistant.byok-model-01 = {"contextKey":"1m"}
+aicoding.modelSelector.runtimeConfig.assistant.byok-model-02 = {"contextKey":"1m"}
+aicoding.modelSelector.runtimeConfig.assistant.byok-model-03 = {"contextKey":"1m"}
+aicoding.modelSelector.runtimeConfig.assistant.qmodel_38max = {"contextKey":"400K"}
+aicoding.modelSelector.runtimeConfig.assistant.qmodel_latest = {"contextKey":"1M"}

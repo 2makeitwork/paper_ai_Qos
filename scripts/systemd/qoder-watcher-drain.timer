@@ -1,0 +1,15 @@
+# Runs qoder-watcher-drain.service every 2 minutes (and 1 min after boot).
+# Enable:  systemctl --user enable --now qoder-watcher-drain.timer
+# Watch:   systemctl --user list-timers qoder-watcher-drain.timer
+
+[Unit]
+Description=Drain the Qoder CN chat watcher queue every 2 minutes
+
+[Timer]
+OnBootSec=1min
+OnUnitActiveSec=2min
+AccuracySec=30s
+Unit=qoder-watcher-drain.service
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,39 @@
+{
+ "note": "verbatim strings; <...> are pseudonyms from anonymization.md",
+ "banner_timeout_80408": "Response timeout. Click to resume or switch to another model and try again.",
+ "banner_tool_limit_40429": "Tool usage limit reached. Click to resume",
+ "banner_input_too_long_80411": "Input content too long, please simplify and retry",
+ "error_dictionary_extract": {
+  "version": "1.0.11",
+  "fetchTime": 1786698280794,
+  "publishTime": "2026-08-13T12:15:05.519Z",
+  "entries": {
+   "en": {
+    "error.code.102": "Sorry, request timeout. Please try again later. [Report Issue](action:issueReport)",
+    "error.code.114": "You have exceeded the limit for free trial accounts. This limitation helps ensure fair usage for all users. Please switch to your first account to continue. [View Documentation](https://help.aliyun.com/document_detail/2807210.html)",
+    "error.code.40429": "Tool usage limit reached. Click to resume",
+    "error.code.40504": "A timeout occurred while attempting to retrieve the tool execution results. [Report Issue](action:issueReport)",
+    "error.code.408": "Response timeout. Please try again. [Report Issue](action:issueReport)",
+    "error.code.45408": "File editing timed out. [Report Issue](action:issueReport)",
+    "error.code.49418": "Tool execution timeout. [Report Issue](action:issueReport)",
+    "error.code.80408": "Response timeout. Click to resume or switch to another model and try again.",
+    "error.code.80409": "Model tool limit exceeded. [Report Issue](action:issueReport)",
+    "error.code.apply_timeout_error": "Timeout occurred when applying. [Report Issue](action:issueReport)",
+    "error.code.generating_timeout_error": "Timeout occurred when generating. [Report Issue](action:issueReport)",
+    "error.code.quota.exceeded": "Quota exceeded. [Report Issue](action:issueReport)",
+    "error.code.quota.init.fn.already.exists": "Quota initialization function already exists. [Report Issue](action:issueReport)",
+    "error.code.quota.unsupported": "Quota unsupported. [Report Issue](action:issueReport)",
+    "error.code.ratelimit.exceeded": "Rate limit exceeded. [Report Issue](action:issueReport)",
+    "error.code.task.running.quota.exceeded": "Running task quota exceeded. [Report Issue](action:issueReport)",
+    "error.code.wiki.queue.timeout": "Request Timeout",
+    "error.code.wiki.queue.timeout.description": "The request timed out, please try again later [Retry](command:repoWiki.retryGeneration)"
+   }
+  }
+ },
+ "quota_payload_variants_seen_in_logs": [
+  "Access denied, please make sure your account is in good standing. For details, see: https://help.aliyun.com/zh/model-studio/error-code#overd",
+  "Allocated quota exceeded, please increase your quota limit. For details, see: https://www.alibabacloud.com/help/en/model-studio/error-code#t",
+  "Your token-plan 1-week quota has been exhausted. The quota will reset at 09-08 01:45:00 UTC."
+ ],
+ "resume_tool_call_sample_line": "10513:2026-09-07 14:09:42.170 [info] [ChatSessionService] Creating tool_call for permission request: {\"toolCallId\":\"call-023\",\"title\":\"resume\",\"rawInput\":{\"chatTask\":\"CONTINUE_TASK\",\"displayEnText\":\"Continue\",\"displayText\":\"继续\",\"reasonForCode\":80408}}"
+}

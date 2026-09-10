@@ -1,0 +1,28 @@
+{
+ "version": "1.0.11",
+ "fetchTime": 1786698280794,
+ "publishTime": "2026-08-13T12:15:05.519Z",
+ "source": "/home/user/.config/QoderCN/User/error-code-cache.json",
+ "entries": {
+  "en": {
+   "error.code.102": "Sorry, request timeout. Please try again later. [Report Issue](action:issueReport)",
+   "error.code.114": "You have exceeded the limit for free trial accounts. This limitation helps ensure fair usage for all users. Please switch to your first account to continue. [View Documentation](https://help.aliyun.com/document_detail/2807210.html)",
+   "error.code.40429": "Tool usage limit reached. Click to resume",
+   "error.code.40504": "A timeout occurred while attempting to retrieve the tool execution results. [Report Issue](action:issueReport)",
+   "error.code.408": "Response timeout. Please try again. [Report Issue](action:issueReport)",
+   "error.code.45408": "File editing timed out. [Report Issue](action:issueReport)",
+   "error.code.49418": "Tool execution timeout. [Report Issue](action:issueReport)",
+   "error.code.80408": "Response timeout. Click to resume or switch to another model and try again.",
+   "error.code.80409": "Model tool limit exceeded. [Report Issue](action:issueReport)",
+   "error.code.apply_timeout_error": "Timeout occurred when applying. [Report Issue](action:issueReport)",
+   "error.code.generating_timeout_error": "Timeout occurred when generating. [Report Issue](action:issueReport)",
+   "error.code.quota.exceeded": "Quota exceeded. [Report Issue](action:issueReport)",
+   "error.code.quota.init.fn.already.exists": "Quota initialization function already exists. [Report Issue](action:issueReport)",
+   "error.code.quota.unsupported": "Quota unsupported. [Report Issue](action:issueReport)",
+   "error.code.ratelimit.exceeded": "Rate limit exceeded. [Report Issue](action:issueReport)",
+   "error.code.task.running.quota.exceeded": "Running task quota exceeded. [Report Issue](action:issueReport)",
+   "error.code.wiki.queue.timeout": "Request Timeout",
+   "error.code.wiki.queue.timeout.description": "The request timed out, please try again later [Retry](command:repoWiki.retryGeneration)"
+  }
+ }
+}
