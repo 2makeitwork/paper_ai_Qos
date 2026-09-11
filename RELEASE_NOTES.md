@@ -41,7 +41,7 @@ concept identifier, covering every archived version of this release; `v1.0.0` is
 Every figure quoted in those documents is recomputed from the shipped `evidence/` and asserted by
 `python3 scripts/analyze.py`, which fails when a number and the evidence disagree;
 `python3 scripts/verify_dataset_card.py` checks the card against the files it declares, and
-`./scripts/preflight.sh` runs every check in one pass. All three run in either repository and need
+The project's release gate runs every check in one pass. All three run in either repository and need
 nothing beyond the files themselves.
 
 **Version 1.0.1, released 2026-09-11.** What changed since `v1.0.0`: the front page and this note

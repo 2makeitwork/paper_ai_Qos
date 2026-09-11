@@ -457,7 +457,7 @@ conversation id, so interaction-level attribution is direct.
   `agent.1.log`), so a busy window can drop days-old events within hours of
   activity. The §4.2 counts are therefore frozen against a point-in-time copy
   of the log tree (`raw_snapshots/`, gitignored), not the mutable live tree,
-  and are kept current by `scripts/log_mirror.py` — an append-only,
+  and are kept current by the project's log mirror — an append-only,
   SHA-256-verified mirror that also flags any in-place rewrite of
   already-written log bytes.
 - **The two horizons in the evidence differ.** The transcript statistics
@@ -466,7 +466,7 @@ conversation id, so interaction-level attribution is direct.
   conversations still active after 15:21 (notably `sess-04`) are snapshots taken
   mid-flight, and re-collecting them now would renumber every `sess-NN`
   pseudonym. §4.6's task extract and §4.7's phase extract were cut from the mirror
-  (`logs_mirror/`, gitignored) through `LOGSRC=… scripts/collect_evidence.sh`
+  (`logs_mirror/`, gitignored) through the collector's `LOGSRC=` override
   for exactly that reason: they add streams without disturbing the frozen map.
   Both are filtered to conversations that already have a stats row
   (`KEEP_ALL=1` lifts that filter for a local-only dump of a live installation).

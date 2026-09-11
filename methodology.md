@@ -14,7 +14,7 @@
 ## Pipeline
 
 ```
-Qoder CN installation ──scripts/collect_evidence.sh──▶ scripts/raw_local/ (not published)
+Qoder CN installation ──the collector (project tooling)──▶ a local raw dump (not published)
                           │
                  scripts/anonymize.py ──▶ evidence/        (publishable, self-auditing)
                           │
@@ -33,7 +33,7 @@ and real conversation identifiers):
 |---|---|---|
 | Derived statistics from the published evidence | `python3 scripts/analyze.py` | **reproduces exactly.** 62 assertions pass. The output file ends with a content hash plus a second-precision timestamp, and when the hash is unchanged the file is not rewritten at all — so running the checks cannot dirty the tree, and two copies with the same hash hold the same statistics whatever their stamps say |
 | Card against files | `python3 scripts/verify_dataset_card.py` | **reproduces exactly**, eight checks, in either repository |
-| Log extracts from the pinned snapshot | `LOGSRC=<snapshot>/logs scripts/collect_evidence.sh` then `scripts/anonymize.py` | **does not reproduce the frozen bundle.** Of 24 published items, 4 matched byte for byte, 11 differed, and 9 were not produced at all (`evidence/screenshots/`, `evidence/user_statements.md`, four extracts, two statistics files, the round-2 directory) |
+| Log extracts from the pinned snapshot | the collector with `LOGSRC=<snapshot>/logs`, then `scripts/anonymize.py` | **does not reproduce the frozen bundle.** Of 24 published items, 4 matched byte for byte, 11 differed, and 9 were not produced at all (`evidence/screenshots/`, `evidence/user_statements.md`, four extracts, two statistics files, the round-2 directory) |
 
 The reasons are concrete rather than mysterious: the error-code dictionary and the model registry
 are **fetched live** from the client and the service, so they are point-in-time observations that
@@ -125,7 +125,7 @@ also carries conversations from unrelated projects.
   overwrites it, so the collector's `--include='*.log'` must run before a
   window rotates twice or the earliest events are unrecoverable. The published
   extracts were frozen against `raw_snapshots/<ts>/` (a full copy + `SHA256SUMS`)
-  and are kept current by `scripts/log_mirror.py`, which mirrors each file
+  and are kept current by the project's log mirror, which mirrors each file
   per-(path,inode) so a rotation-out generation is captured and hashed before
   it can be overwritten, and re-hashes committed regions on every 3-minute scan
   to detect any in-place edit of already-written log bytes.
@@ -134,6 +134,6 @@ also carries conversations from unrelated projects.
   extract containing an unknown id would shift every later pseudonym. The
   quest.log extract is therefore filtered to conversations that already have a
   row in `session_stats/session_size_stats.csv` (1 of the 10 task ids in the
-  mirror is dropped, 12 events), and `collect_evidence.sh` reads
+  mirror is dropped, 12 events), and the collector reads
   `LOGSRC=<mirror dir>` so a stream can be added from the frozen mirror instead
   of the live tree, which has already moved past the study window.

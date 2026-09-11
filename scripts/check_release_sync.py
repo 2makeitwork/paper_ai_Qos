@@ -25,7 +25,7 @@ Two deliberate tolerances, both narrow and both reported out loud:
 Usage:
     python3 scripts/check_release_sync.py                      # working tree vs the hub
     python3 scripts/check_release_sync.py --ref v0.3.0-pre     # a tagged tree vs the hub
-    ZENODO_TOKEN=… python3 scripts/check_release_sync.py --zenodo-draft 22699009
+    ZENODO_TOKEN=… python3 scripts/check_release_sync.py --zenodo-draft <draft id>
     python3 scripts/check_release_sync.py --zenodo 1234567     # a published record, no token
 
 Exit code 0 = the manifests agree and the served text is clean; 1 = drift, a text finding,

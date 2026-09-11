@@ -1,8 +1,7 @@
 # Human- and machine-readable citation for this repository.
 # doi: is the concept identifier of the archived software, which resolves to the latest
 # archived version; the version identifiers are listed below. The evidence-record identifier is
-# still pending, and that pending marker is what scripts/preflight.sh checks to decide whether to
-# remind anyone about it.
+# absent, and that state is what the project's release gate reads so it can say so accurately.
 cff-version: 1.2.0
 message: >-
   Cite the paper for the method and findings, the dataset for the evidence
@@ -18,12 +17,13 @@ authors:
     # affiliation is to be added here or in any listing, archive record or citation form
     # Do not attempt to resolve the handle to a person.
 type: dataset
-version: "1.0.1"    # matches the tag v1.0.1, the citable snapshot; scripts/preflight.sh --release <tag> and scripts/analyze.py both refuse if they differ
+version: "1.0.1"    # matches the tag v1.0.1, the citable snapshot; the release gate and scripts/analyze.py both refuse if the two differ
 date-released: "2026-09-11"   # the release date of this version
 doi: 10.5281/zenodo.22701430   # concept DOI — all archived versions, from Zenodo's GitHub integration
 # Version identifiers: v1.0.0 = 10.5281/zenodo.22701431 (and v1.0.1 gets its own on release).
 # Cite the concept identifier unless a specific archived version matters.
-# dataset-doi: pending (Zenodo record 22699009 is still a draft; publishing it mints this one)
+# dataset-doi: none — no separate evidence deposit exists (the draft was discarded 2026-09-11).
+# The evidence is preserved by the dataset repository and by the archived source copies above.
 repository-code: "https://github.com/2makeitwork/paper_ai_Qos"
 repository-artifact: "https://huggingface.co/datasets/2makeitwork/paper_ai_Qos"
 license: >-

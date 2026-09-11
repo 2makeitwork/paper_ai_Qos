@@ -219,7 +219,7 @@ python3 scripts/analyze.py          # re-derives and asserts every published fig
 ```
 
 The log-side tools are source-repository material and are **not published here**:
-`scripts/collect_evidence.sh` and `scripts/latency_from_logs.py` need the raw client logs, which
+`scripts/latency_from_logs.py` needs the raw client logs, which
 carry local paths and real conversation identifiers and are never distributed. What does ship
 here re-runs from these files, and `methodology.md`, "What re-runs, and from what", states the
 boundary honestly rather than implying a full rebuild.

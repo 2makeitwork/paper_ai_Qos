@@ -355,7 +355,8 @@ Two independent streams are used, deliberately ordered:
    durable trace), quota markers, the `Model classes refreshed` registry line,
    and the fetched `error-code-cache.json`. `scripts/latency_from_logs.py` walks
    the transitions per session to reconstruct request boundaries and outcomes.
-2. **A DOM watcher (cross-check).** `scripts/watcher/cdp_watch.js` attaches to
+2. **A DOM watcher (cross-check).** `cdp_watch.js` — project tooling, preserved in the archived
+   source copy rather than in this repository — attaches to
    the renderer over CDP and stamps transitions the log may miss. It is treated
    as a **candidate-signal source only**, never authoritative, because it has a
    documented false-positive class: it reads the current message bubble, so an
@@ -365,7 +366,7 @@ Two independent streams are used, deliberately ordered:
    the log — i.e. it saw the paper being written, not a failure. This is kept in
    the study as an *observability* result, not a measurement.
 
-Supporting instruments: `scripts/log_mirror.py`, a tamper-evident append-only
+Supporting instruments: the log mirror, a tamper-evident append-only
 mirror that also flags in-place edits, exists because retention is shallow (§4.7).
 
 ### 3.2 Event reconstruction
@@ -397,7 +398,7 @@ interpretation → limitation*.
 
 ### 3.4 Reproducibility
 
-`collect_evidence.sh` reads the installation → `anonymize.py` produces
+the collector reads the installation → `scripts/anonymize.py` produces
 `evidence/` (fails on any surviving PII pattern) → `analyze.py` recomputes and
 **asserts** every quoted number against `evidence/` and regenerates
 `analysis/summary_tables.md`. Reader-side: `python3 scripts/analyze.py`.
@@ -546,7 +547,7 @@ field is what turns "oversized context" from a transcript-size proxy into a
 measured quantity, and it carries §4.8. **Retention is size-based and short:** each window's
 `agent.log` rotates at 5 MiB keeping only *one* backup generation, so the next
 rotation destroys the storm block. Evidence is therefore frozen against
-`raw_snapshots/` + a `log_mirror.py` copy, not the mutable live tree.
+a frozen snapshot plus the mirror's copy, not the mutable live tree.
 
 ### 4.8 Second collection round (2026-09-10): the size claim becomes experimental
 

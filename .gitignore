@@ -37,3 +37,15 @@ AGENTS.md
 /methodology_guidance/
 /ai_qos_methodology_docs.zip
 /NESTING_WORKFLOW.md
+
+# the project's own tooling: versioned in the private workshop repository
+# 2makeitwork/ai_qos_workshop and copied into this checkout so the release gate can run
+# against the publication. Nothing a reader is told to fetch lives here.
+/scripts/preflight.sh
+/scripts/build_data_layer.py
+/scripts/systemd/
+/scripts/watcher/
+/scripts/log_mirror.py
+/scripts/collect_evidence.sh
+/zenodo/
+!/.zenodo.json

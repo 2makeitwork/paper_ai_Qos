@@ -76,16 +76,14 @@ latency distribution instead of a complaint.
 | `methodology.md` | anchors, sources, pipeline, exclusions |
 | `anonymization.md` | scrubbing policy and how it is machine-checked |
 | `evidence/` | anonymized raw statistics, log extracts, configs, timeline CSVs, error-message strings, screenshot, operator statements; `evidence/incident_20260910/` is a second, separately labelled collection round (2026-09-10) with its own pseudonym namespace |
-| `scripts/collect_evidence.sh` | re-collects the raw dump from a Qoder CN installation (its `scripts/raw_local/` working directory is not published); `LOGSRC=<dir>` points it at a frozen copy such as the mirror instead of the live tree |
 | `scripts/anonymize.py` | turns a raw dump into `evidence/`; exits nonzero if any forbidden pattern survives |
 | `scripts/analyze.py` | recomputes every number quoted in the report from `evidence/` alone and asserts them; regenerates `analysis/summary_tables.md` |
 | `scripts/latency_from_logs.py` | turns the client's phase-transition and context-occupancy log lines into a per-request lifecycle table (wait for first streamed chunk, turn total, send-to-stall, first-chunk-to-stall, timeout versus dialog park, tokens at send); `--since` scopes a collection round to its own incident |
 | `scripts/verify_dataset_card.py` | checks `DATASET_CARD.md` against the files it declares — config paths exist, tables are well-formed, stated row counts are true, required card sections present |
 | `scripts/check_release_sync.py` | compares the published data layer, file by file and hash by hash, across the working tree (or a tag), the Hugging Face dataset repository and a Zenodo record — the three update independently, so drift is the default state and this is how it is measured rather than assumed (`--ref <tag>`, `--zenodo <record>`, `--zenodo-draft <id>` with a token). It also scans the **served text** for maintainer instructions, because fixing a document locally is not the same as fixing what the hub hands out |
-| `scripts/build_data_layer.py` | stages exactly the files the data layer is defined to contain, from the working tree or a tag, and refuses to produce a partial or misplaced payload. One manifest (`PAYLOAD` in `check_release_sync.py`) feeds the upload, the archive deposit and the comparison, so the published set cannot be assembled three different ways |
-| `scripts/log_mirror.py` | append-only mirror of the live IDE logs, capturing each file as it rotates out and SHA-256-verifying committed regions to flag in-place tampering; run every minute by the user timer pair in `scripts/systemd/` (`qoder-log-mirror.timer` → `qoder-log-mirror.service scan --once`), and `snapshot` for a checksummed frozen tree. Its `logs_mirror/` output is not published |
 | `analysis/summary_tables.md` | the derived statistics, as generated |
-| `scripts/watcher/` | `cdp_watch.js` DOM watcher over CDP — render-side candidate signals; since 2026-09-09 the log phase stream (§4.7) is the primary timing instrument and this is the cross-check (see the false-positive note in its header). Its capture output is not published |
+
+The capture and shipping pipeline — the collector that reads the installation, the tamper-evident log mirror and its systemd timers, the DOM watcher cross-check, the release gate and the payload builders — is the project's own tooling and is not published here. `methodology.md` states what each instrument did, and the complete pipeline is preserved in the archived source copies cited under Cite this above, which is where a reader who needs the collector should look.
 
 ## Cite this
 
