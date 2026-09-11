@@ -8,7 +8,7 @@ message: >-
   bundle, and the commit for the tooling that produced a number. See
   the dataset card's Citation section for the citation rules (snapshot not branch; name
   the collection round; cite client version plus service, not the model alone).
-  Released 2026-09-11 as version 1.0.1 (methodology v0.1): cite the tag or the DOI, never a
+  Released 2026-09-11 as version 1.0.2 (methodology v0.1): cite the tag or the DOI, never a
   branch.
 title: "AI Service QoS: An Independent Outside-In Measurement Methodology, with Case Study 1 (Qwen3.8-Max / Qoder)"
 authors:
@@ -17,7 +17,7 @@ authors:
     # affiliation is to be added here or in any listing, archive record or citation form
     # Do not attempt to resolve the handle to a person.
 type: dataset
-version: "1.0.1"    # matches the tag v1.0.1, the citable snapshot; the release gate and scripts/analyze.py both refuse if the two differ
+version: "1.0.2"    # matches the tag v1.0.2, the citable snapshot; the release gate and scripts/analyze.py both refuse if the two differ
 date-released: "2026-09-11"   # the release date of this version
 doi: 10.5281/zenodo.22701430   # concept DOI — all archived versions, from Zenodo's GitHub integration
 # Version identifiers: v1.0.0 = 10.5281/zenodo.22701431, v1.0.1 = 10.5281/zenodo.22701701.
@@ -30,7 +30,7 @@ license: >-
   CC-BY-4.0 (text, tables, figures and evidence data; see LICENSE-content.md);
   MIT (executable tooling under scripts/; see LICENSE-code.md)
 # A commit hash cannot be written into the commit it names, so the snapshot to cite is the
-# tag: v1.0.1. Zenodo's GitHub integration archives each published release automatically and
+# tag: v1.0.2. Zenodo's GitHub integration archives each published release automatically and
 # mints the version identifier; the record above proves the hook fires.
 keywords:
   - AI service qualityscripts/preflight.sh
@@ -63,6 +63,11 @@ identifiers:
 # repository-code, title, type, url, version) and `additionalProperties: false` makes an invented key
 # a validation error. scripts/analyze.py now refuses any top-level key outside that list.
 #
+#   1.0.2  2026-09-11  References section added: every work section 1.4 characterises is now listed
+#                      with its locator, how far it was read, and why the exclusions were excluded;
+#                      the capture and shipping pipeline moved to the project's private workshop
+#                      repository, leaving five scripts here, and the sentences that named them now
+#                      describe them instead. No evidence, definition or figure changed.
 #   1.0.1  2026-09-11  Front page reordered: the paper is presented as the contribution and the
 #                      case report, evidence and tooling as the means it serves. Adds the archive
 #                      identifiers above. No evidence, no definition and no figure changed.

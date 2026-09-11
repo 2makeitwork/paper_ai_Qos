@@ -305,13 +305,41 @@ else:
 
 # ---- release notice: one text, one version, present everywhere ----
 NOTICE_DATE = "2026-09-11"
-RELEASED = "1.0.1"        # the released version; CITATION.cff must carry this same string
+RELEASED = "1.0.2"        # the released version; CITATION.cff must carry this same string
 NOTICE_MARK = f"**Released {NOTICE_DATE} as v{RELEASED}**"
-PUB_DOCS = [doc for doc in (EV.parent / n for n in
-            ("paper_ai_QoS.md", "report_qwenAliServiceQuality.md", "README.md", "abstract.md",
-             "methodology.md", "anonymization.md", "ask_vendor.md", "DATA_REQUEST.md",
-             "DATASET_CARD.md", "zenodo/README.md")) if doc.exists()]
-notice_problems = [doc.name for doc in PUB_DOCS
+PUBLISHED_NAMES = ("paper_ai_QoS.md", "report_qwenAliServiceQuality.md", "README.md",
+                   "abstract.md", "methodology.md", "anonymization.md", "ask_vendor.md",
+                   "DATA_REQUEST.md", "DATASET_CARD.md")
+
+
+def tracked_here() -> set[str] | None:
+    """Paths git tracks, but only at the top level of a repository: `git ls-files` lists what is
+    tracked *under* the current directory, so asking it from a staging directory would return an
+    empty set and make every published file look unpublished."""
+    try:
+        prefix = subprocess.run(["git", "-C", str(EV.parent), "rev-parse", "--show-prefix"],
+                                capture_output=True, text=True, timeout=30)
+        if prefix.returncode != 0 or prefix.stdout.strip():
+            return None
+        listing = subprocess.run(["git", "-C", str(EV.parent), "ls-files"],
+                                 capture_output=True, text=True, timeout=30)
+    except (OSError, subprocess.SubprocessError):
+        return None
+    return set(listing.stdout.split()) if listing.returncode == 0 else None
+
+
+TRACKED = tracked_here()
+# "Published document" means a document in the published set, not merely a file on this disk:
+# zenodo/README.md moved to the private workshop repository and is no longer a reader's file.
+PUB_DOCS = [doc for doc in (EV.parent / n for n in PUBLISHED_NAMES)
+            if doc.exists() and (TRACKED is None or doc.relative_to(EV.parent).as_posix() in TRACKED)]
+
+
+def where(doc) -> str:
+    """Relative path, never a bare name: zenodo/README.md and README.md share a name, and a
+    failure that names only "README.md" sends the reader to the wrong file."""
+    return doc.relative_to(EV.parent).as_posix()
+notice_problems = [where(doc) for doc in PUB_DOCS
                    if NOTICE_MARK not in doc.read_text(errors="replace")]
 if PUB_DOCS:
     check(f"release notice {NOTICE_MARK} present in every published document",
@@ -339,7 +367,7 @@ byline_docs = [doc for doc in PUB_DOCS
                if doc.parent == EV.parent and doc.name in BYLINE_DOCS]
 if byline_docs:
     check("authorship stated as independent and unaffiliated in every document that carries a byline",
-          [doc.name for doc in byline_docs if BYLINE not in doc.read_text(errors="replace")], [])
+          [where(doc) for doc in byline_docs if BYLINE not in doc.read_text(errors="replace")], [])
     zen = [p for p in (EV.parent / "zenodo" / "deposit-dataset.json", EV.parent / ".zenodo.json")
            if p.exists()]
     bad = []
@@ -361,7 +389,7 @@ for doc in [d for d in PUB_DOCS if d.name != "PUBLICATION.md"]:
     for n, line in enumerate(body.splitlines(), 1):
         named = [p for p in PRIVATE if p in line]
         if named and not any(w in line.lower() for w in DISCLOSED):
-            private_problems.append(f"{doc.name}:{n} names {named[0]} without saying it is unpublished")
+            private_problems.append(f"{where(doc)}:{n} names {named[0]} without saying it is unpublished")
 if PUB_DOCS:
     check("no published document points a reader at a private file without saying so",
           private_problems, [])
@@ -400,7 +428,7 @@ for doc in PUB_DOCS:
             continue
         section = section_of(body_lines, n - 1)
         if NOTICE_DATE not in section or not DATE_RE.search(section):
-            count_problems.append(f"{doc.name}:{n}: {found.group(0)!r} quoted in a section that "
+            count_problems.append(f"{where(doc)}:{n}: {found.group(0)!r} quoted in a section that "
                                   f"does not date the measurement (need {NOTICE_DATE} + 'measured')")
 if PUB_DOCS:
     check("no published document quotes a check or figure count unless its section dates the measurement",
@@ -420,7 +448,7 @@ for doc in PUB_DOCS:
     for n, line in enumerate(doc.read_text(errors="replace").splitlines(), 1):
         low = line.lower()
         if line.startswith("#") and "(" in line and any(w in low for w in VENUE_WORDS):
-            editorial_problems.append(f"{doc.name}:{n}: heading routes text to a venue: "
+            editorial_problems.append(f"{where(doc)}:{n}: heading routes text to a venue: "
                                       f"{line.strip()[:64]}")
 if PUB_DOCS:
     check("no published heading carries editorial routing instructions", editorial_problems, [])
@@ -449,7 +477,7 @@ def tracked_at_root() -> set[str] | None:
     return set(listing.stdout.split()) if listing.returncode == 0 else None
 
 
-TRACKED = tracked_at_root()
+TRACKED = TRACKED if TRACKED is not None else tracked_at_root()
 LOCAL_WORDS = ("local-only", "not published", "not in this repository", "never published")
 script_problems = []
 scripts_dir = EV.parent / "scripts"

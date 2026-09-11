@@ -4,7 +4,7 @@
 added to any listing, citation or archive record on this project's behalf. The handle is
 pseudonymous by choice and is not to be resolved to a person.
 
-> **Released 2026-09-11 as v1.0.1** (methodology v0.1). This snapshot is frozen: later
+> **Released 2026-09-11 as v1.0.2** (methodology v0.1). This snapshot is frozen: later
 > corrections and additions ship as a new version with a new tag, never as an edit to the bytes a
 > citation points at — cite the tag or the Digital Object Identifier, not a branch. Two version
 > numbers mean two different things here: the tag names this public snapshot, while *methodology
@@ -153,9 +153,9 @@ instruments (§3), the case (§4), and what it does and does not establish (§5�
 
 External, black-box measurement of large-language-model services is **not new** and this paper claims
 no priority for it. The instruments are shared with the work below; the purpose is not. Only the
-category and the difference are stated here; the per-work record, including what was considered and
-deliberately not cited, is in the project's working notes, which are not published — every claim made
-below therefore stands on the identifiers given in the table.
+category and the difference are stated here; the works themselves, how far each was read, and the
+reasons for the exclusions are in **References**, so nothing below asks the reader to take a
+characterisation on trust or to accept an omission without a name.
 
 | Category | Work | The difference, in one line |
 |---|---|---|
@@ -766,6 +766,65 @@ exposes it.** This single, ordinary field incident produced all four in a week o
 normal use, which is the argument for measuring delivery (not just capability) at
 the request level. The next step is to freeze the method and test it on a second
 provider — a step left deliberately open, to be taken only if there is interest.
+
+---
+
+## References
+
+Section 1.4 characterises each of these, so each is listed here even where this paper adopts none
+of its conclusions. Characterising someone's work is the obligation; borrowing its conclusions is
+not the trigger. How far each was read is stated per entry rather than hidden, because an
+abstract-level characterisation is honest only when it says so.
+
+**Positioned against (section 1.4, first three rows)**
+
+1. The Ray project. **LLMPerf** — repository `github.com/ray-project/llmperf`, whose measured
+   quantities are defined by `token_benchmark_ray.py`. Characterised from the project's own
+   documentation; the source reading is an open item.
+2. V. J. Reddi *et al.* **MLPerf Inference Benchmark.** *Proceedings of the 47th Annual
+   International Symposium on Computer Architecture (ISCA 2020)*, pp. 446–459, IEEE, 2020. Venue
+   and pages verified against a citing bibliography, not against the paper's own text; the four
+   LoadGen scenarios and the closed/open division split described in section 1.4 come from the
+   operator's summary of it, and the full reading is open.
+3. **Benchmarking Methodology for Large Language Model Serving.** Internet-Draft
+   `draft-gaikwad-llm-benchmarking-methodology-01`, 2026. A work in progress, not an approved
+   standard; cited for the vocabulary this schema could be mapped onto rather than competed with.
+   Read against the primary text on 2026-09-11.
+4. The llmlatency project. **LLM Latency Tracker** — dataset
+   `huggingface.co/datasets/llmlatency/llm-latency-tracker`, methodology at
+   `llmlatency.dev/methodology`. The closest public longitudinal comparator; characterised from its
+   published methodology, full reading open.
+
+**Considered and deliberately not relied upon (section 1.4, last row)** — listed so the exclusion can
+be checked rather than taken on trust, since a rejection that names nothing is an omission rather
+than a decision:
+
+5. **GateScope: Behavioral Consistency and Transparency Analysis on Large Language Model API
+   Gateways.** arXiv:2604.21083. Method nearest to ours, subject not: it asks whether a gateway
+   serves what it advertises, which is an authenticity question rather than a delivery one.
+6. **Are You Getting What You Pay For? Auditing Model Substitution in LLM APIs.** arXiv:2504.04715.
+   Authenticity by adversarial testing and hardware attestation; this paper claims nothing about
+   which model answered, so it is not a comparator.
+7. A stateful-failover continuity study, arXiv:2607.15899. Too narrow an angle — delivery across
+   provider failover — to carry a general claim, and the distinction it would have supported is
+   evidenced by Case Study 1 itself.
+
+**Primary sources for the case study** — the service's own statements, captured as dated artifacts
+rather than quoted from memory, because the finding is precisely that the documented codes and the
+observed behaviour diverge:
+
+8. **Model Studio error-code dictionary** as fetched by the client,
+   `evidence/config/error-code-dictionary_extract.json` (version `1.0.11`, 2026) — where the
+   dedicated input-too-long code is defined, and never fired during the study window.
+9. **Model registry entry** for the measured model,
+   `evidence/config/model_registry_qmodel_38max.txt` — the declared input limit against the
+   1M-context presets offered beside it.
+10. **The evidence bundle**: the dataset repository `2makeitwork/paper_ai_Qos`, archived under
+    concept identifier `10.5281/zenodo.22701430`. Every number in this paper is re-derived from it
+    by `scripts/analyze.py`, which fails when a figure and the evidence disagree.
+
+The vendor-facing case report for the same incident, carrying the per-event tables, the reproduction
+steps and the requests made of the provider, is `report_qwenAliServiceQuality.md` in this repository.
 
 ---
 
