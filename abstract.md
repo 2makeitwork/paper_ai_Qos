@@ -1,28 +1,40 @@
 # Abstract and entry texts
 
+> **Pre-release, last revised 2026-09-11** (methodology v0.1). Definitions, wording and figures
+> may still change; cite a snapshot — a release tag or a commit, not a branch — so that a later
+> revision cannot move what your citation points at. Every figure quoted in this document set is
+> asserted against the shipped evidence by `scripts/analyze.py`, which fails when a number and the
+> evidence disagree and warns when a file is edited after the date above.
+
 ## Project identity (the headline to use everywhere)
 
 * Publication identity: **AI Service QoS — Independent Measurement of What Users Actually Receive**
 * North star: An independent, outside-in measurement framework for evaluating the reliability, latency, usability, and failure behavior of AI services under real user workloads.
 * Release title (Stage 1): **AI Service QoS: An Independent Outside-In Measurement Methodology** — with the Qwen3.8-Max / Qoder incident as **Case Study 1**
 * Methodology version: **v0.1**
+* Author: **2makeitwork** — independent, unaffiliated (decided 2026-09-11). No institution name goes
+  in any byline, citation, dataset card or archive record; an empty affiliation field is the
+  intended state, not an oversight.
 
-## Paper abstract (formal, for the paper itself)
+## Paper abstract (the authoritative text is `paper_ai_QoS.md` §Abstract; this is the condensed
+single-paragraph form for listings, and the two are not expected to match word for word)
 
 Capability benchmarks score answers. They do not measure the service: how long a request waits, whether it is silently dropped, how a provider reports an overflow, or how many retries a user spends getting a usable reply. Nor is this external latency benchmarking or gateway auditing, which measure inference-system performance under controlled loads and provider honesty respectively. This paper establishes a method for measuring the quality of service (QoS) an AI service actually delivers, at the level of the individual submitted request, defined from the user's side and independently of any provider's vocabulary, so that results are comparable across services and verifiable without vendor cooperation. The method specifies a unit of observation, a latency distribution rather than a mean, a six-class outcome taxonomy with raw provider codes retained alongside it, project-defined denominators, retry accounting that never folds retries into successes, a task taxonomy following real work, and a machine-readable event schema. We demonstrate it on one field incident — Qwen3.8-Max through the Qoder CN IDE, where 33 requests timed out as client code 80408 while the dedicated input-too-long code never fired, against a registry advertising 1M context over a declared 180,000-token input limit. The incident is the example, not the subject. A second collection round the following day turned the size claim from correlation into a within-conversation experiment: in a conversation the client itself reported at 490,789 and 494,193 context tokens, five stalls produced no streamed output at all, and after the client's own context-compaction control reduced that conversation to 117,153 tokens, the next request — carrying 85,115 — returned its first streamed chunk in 8.4 seconds; the largest context that completed anywhere in that round was 452,447 tokens, and pooled data from both rounds overlap in size, so context is reported as a probability factor and never as a threshold. Three negative results are stated with the same weight as the positive ones: panel visibility, server-side cache residency, and inflating an agent's context by instructing it to read files. We neither benchmark that model nor investigate why the server stalls; both require data only the vendor holds, and the schema is written so that a vendor can supply exactly that data and answer them.
 
 ## One-line entry (repository subtitle, listing, tweet)
 
-Measuring the service quality an artificial-intelligence service actually gives a
-user — request by request, from the client's own log, with no vendor cooperation.
+A user can tell within a day whether a model is good enough. This measures what they cannot
+tell — whether the vendor will answer, in time, on the day it matters — request by request, from
+the client's own log, with no vendor cooperation.
 
 ## Short entry (about 300 characters: post summary field, search result, card lead)
 
-A request-level way to measure the quality of service an artificial-intelligence
-service delivers, defined from the user's side and independent of any provider's
-vocabulary: unit of observation, latency distributions, a six-class outcome
-taxonomy, retry accounting and a machine-readable event schema — demonstrated on a
-ten-day field incident with every figure reproducible from the shipped evidence.
+A request-level way to measure the one property of an artificial-intelligence service that a user
+cannot evaluate for themselves: capability reveals itself in a day of real work, delivery does not,
+and it arrives as one generic banner whatever caused it. Defined from the user's side and
+independent of any provider's vocabulary: unit of observation, latency distributions, a six-class
+outcome taxonomy, retry accounting and a machine-readable event schema — demonstrated on a ten-day
+field incident with every figure reproducible from the shipped evidence.
 
 ## Entry paragraph (three sentences: post body opening, collection note)
 

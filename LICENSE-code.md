@@ -1,7 +1,9 @@
 # License for the code
 
-**MIT License** — applies to the executable tooling in `scripts/` and `tools/`
-(the collection, anonymization, verification, mirror and watcher code). Text,
+**MIT License** — applies to the executable tooling in `scripts/`
+(the collection, anonymization, verification, mirror and watcher code). A few local-only
+repository tools under `tools/` are under these same terms but are not part of the
+published set. Text,
 tables, figures and evidence data are covered by `LICENSE-content.md` instead.
 
 Copyright (c) 2026 2makeitwork

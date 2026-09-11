@@ -13,8 +13,7 @@ no card, so every claim it makes in machine-readable form is checked here:
   5. the sections the Hugging Face dataset-card evaluation looks for are present;
   6. the license is declared under a key the hub actually reads, and agrees with
      `CITATION.cff` and the root `LICENSE` notice (this repository is dual-licensed
-     by path: Creative Commons Attribution 4.0 for text and data, MIT for `scripts/`
-     and `tools/`).
+     by path: Creative Commons Attribution 4.0 for text and data, MIT for `scripts/`).
 
 Exit code 0 = all six hold. Run it before `hf upload`.
 

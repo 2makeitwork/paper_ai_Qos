@@ -7,7 +7,7 @@ the evidence data is MIT.
 | What | Where | License | Notice file |
 |---|---|---|---|
 | Text, tables, figures, transcripts quoted in the paper, and the evidence data | the whole repository except the two rows below | **Creative Commons Attribution 4.0** (CC-BY-4.0) | `LICENSE-content.md` |
-| Executable tooling | `scripts/`, `tools/` | **MIT License** | `LICENSE-code.md` |
+| Executable tooling | `scripts/` | **MIT License** | `LICENSE-code.md` |
 | Third-party material inside the evidence | IDE screenshot (`evidence/screenshots/`), provider error strings, model and product names | remains the rights holder's; cited for identification and commentary | see `LICENSE-content.md` |
 
 **Attribution for reuse:** `2makeitwork, "AI Service QoS — Independent Measurement of
@@ -16,6 +16,6 @@ round and the client version, not only the model name.
 
 **A note on machine-readable license fields.** The dataset card front matter declares
 `license: cc-by-4.0` because the dataset repository ships data and text only; the
-tooling under `scripts/` and `tools/` keeps its MIT notice in the source repository.
+tooling under `scripts/` keeps its MIT notice in the source repository.
 `CITATION.cff` carries the same split, and `scripts/verify_dataset_card.py` fails if
 the three documents disagree.

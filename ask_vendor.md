@@ -1,5 +1,11 @@
 # Questions for the vendor (Qoder CN IDE) and the model service (Alibaba Cloud Model Studio)
 
+> **Pre-release, last revised 2026-09-11** (methodology v0.1). Definitions, wording and figures
+> may still change; cite a snapshot — a release tag or a commit, not a branch — so that a later
+> revision cannot move what your citation points at. Every figure quoted in this document set is
+> asserted against the shipped evidence by `scripts/analyze.py`, which fails when a number and the
+> evidence disagree and warns when a file is edited after the date above.
+
 Everything here is stated as *tested by us, answer unknown to us*. We measured from
 the client's own runtime log; we did not probe the service, and several of these
 can only be answered from inside the provider. Nothing below is a claim that the
@@ -112,3 +118,23 @@ observers most, at almost no cost: **keep them, and write them into the
 transcript** rather than only into rotating runtime logs, and publish the field
 meanings. Everything in our paper is reproducible from the client alone; that is
 the property worth preserving.
+
+## H. What resource was behind the answer? — the denominator a client cannot see
+
+Everything above asks what the service *said*. This asks what it *spent*, because without it no
+cross-provider comparison can be honest about efficiency:
+
+1. Per request (or per hour, per account tier), what **compute or power** was assigned? A
+   "1 megawatt of capacity serves how many users, how well, for how long" figure is the one number
+   that makes two providers comparable when one runs a bigger fleet than the other.
+2. Is the concurrency behind this subscription tier a **capacity budget**, and when that budget is
+   reached, is the request queued silently, dropped without a code, or served by a degraded path?
+   Our data shows 60-second and multi-minute stalls with no distinguishing signal; a load-shedding
+   policy would explain them.
+3. Do you route accounts across **regions or data centres**, and can a client be told which pool
+   served a request? If the serving pool changes under load, then a client-side latency measurement
+   is partly a measurement of your scheduling decision — which we would like to be able to state
+   instead of infer.
+
+We do not expect these to be answered; they are here because they are the boundary of what an
+outside-in method can establish, and the questions a provider-side record could settle.

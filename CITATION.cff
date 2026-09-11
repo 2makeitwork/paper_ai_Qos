@@ -7,20 +7,24 @@ message: >-
   bundle, and the commit for the tooling that produced a number. See
   the dataset card's Citation section for the citation rules (snapshot not branch; name
   the collection round; cite client version plus service, not the model alone).
+  This is a pre-release (last revised 2026-09-11): cite the snapshot, never a branch.
 title: "AI Service QoS: An Independent Outside-In Measurement Methodology, with Case Study 1 (Qwen3.8-Max / Qoder)"
 authors:
   - name: "2makeitwork"
-    # Pseudonymous by choice; independent authorship. Do not attempt to resolve.
+    # Pseudonymous by choice. Independent, unaffiliated author (decided 2026-09-11): no
+    # affiliation is to be added here or in any listing, archive record or citation form
+    # Do not attempt to resolve the handle to a person.
 type: dataset
-version: "0.2.0"          # bump and tag at release
-date-released: "2026-09-10"
+version: "0.3.0-pre"      # matches the tag v0.3.0-pre; pre-release, definitions may still move
+date-released: "2026-09-11"   # last revision of the document set, not a release date
 # doi: ""                 # dataset DOI, then paper-page DOI
 repository-code: "https://github.com/2makeitwork/paper_ai_Qos"
 repository-artifact: "https://huggingface.co/datasets/2makeitwork/paper_ai_Qos"
 license: >-
   CC-BY-4.0 (text, tables, figures and evidence data; see LICENSE-content.md);
-  MIT (executable tooling under scripts/ and tools/; see LICENSE-code.md)
-commit: TBD               # set to the release tag's commit hash
+  MIT (executable tooling under scripts/; see LICENSE-code.md)
+# A commit hash cannot be written into the commit it names, so the snapshot to cite is the
+# tag: v0.3.0-pre. Zenodo's GitHub integration mints the version DOI from the release page.
 keywords:
   - AI service quality
   - large language model service measurement

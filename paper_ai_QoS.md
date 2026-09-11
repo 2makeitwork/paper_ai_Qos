@@ -1,5 +1,15 @@
 # AI Service QoS: An Independent Outside-In Measurement Methodology, with Case Study 1 (Qwen3.8-Max / Qoder)
 
+**Author.** 2makeitwork — independent, unaffiliated: no institution is claimed, and none should be
+added to any listing, citation or archive record on this project's behalf. The handle is
+pseudonymous by choice and is not to be resolved to a person.
+
+> **Pre-release, last revised 2026-09-11** (methodology v0.1). Definitions, wording and figures
+> may still change; cite a snapshot — a release tag or a commit, not a branch — so that a later
+> revision cannot move what your citation points at. Every figure quoted in this document set is
+> asserted against the shipped evidence by `scripts/analyze.py`, which fails when a number and the
+> evidence disagree and warns when a file is edited after the date above.
+
 > **Relationship to the case report.** This is the citable method-and-findings
 > document. `report_qwenAliServiceQuality.md` is the vendor-facing case report that
 > carries the per-event tables, the asks and the step-by-step reproduction; the
@@ -28,7 +38,9 @@ the *service*: how long a request waits, whether it is silently dropped, how a
 provider reports an overflow, or how many retries a user spends to get an answer.
 As agentic workflows make a single task into dozens of long, context-heavy
 requests, that service layer — not raw capability — increasingly decides whether
-the work completes.
+the work completes. The two are not symmetric in how a user learns of them: capability is disclosed
+by the first day of real work, while delivery is disclosed only by failure, and a failure is reported
+as one generic banner whatever caused it.
 
 This paper proposes **request-level QoS measurement for AI services**: a unit of
 observation (the submitted request), a latency representation (a distribution,
@@ -74,6 +86,18 @@ this because they score *answers*, not *delivery*. What is missing is a way to
 describe **what the service did** to a stream of real requests: their timing,
 their outcomes, their retries — measured from the user's side.
 
+The two things a paid service has to be good at are not symmetric in how a user finds out.
+**Capability discloses itself:** within a day or two of real work, a person knows whether the model
+is good enough for their task and can decide whether to keep paying — costly to discover, which is
+what every benchmark exists to make cheaper, but discoverable. **Delivery does not.** A service that
+answers well nine times and stalls on the tenth looks, from inside the tenth conversation, like bad
+luck; a token-burst throttle, a saturated region, a plan restriction and an input overflow all arrive
+as the same banner; and nothing in the interface accumulates them into a rate, so the pattern becomes
+unmistakable only after the subscription is paid for. A model that does not answer is not a capable
+model that failed to speak: to that user, in that minute, it is no model at all. That asymmetry — not
+the wish for another quality axis — is why this measurement is needed and why the taxonomy in
+section 2.4 is built from what the interface reported rather than from what the user suspected.
+
 ### 1.2 Why request-level
 
 The natural unit is not the session or the day but the **submitted request**:
@@ -116,55 +140,30 @@ instruments (§3), the case (§4), and what it does and does not establish (§5�
 
 ### 1.4 Positioning against prior measurement work
 
-External, black-box measurement of large-language-model services is **not new**, and
-this paper does not claim to have invented it. The closest prior work falls into
-three groups, and our relation to each is stated rather than glossed.
+External, black-box measurement of large-language-model services is **not new** and this paper claims
+no priority for it. The instruments are shared with the work below; the purpose is not. Only the
+category and the difference are stated here; the per-work record, including what was considered and
+deliberately not cited, is in the project's working notes, which are not published — every claim made
+below therefore stands on the identifiers given in the table.
 
-**Infrastructure and controlled-load benchmarking.** LLMPerf (Ray project) sends
-controlled requests to commercial endpoints and reports time to first token,
-inter-token latency, throughput, total latency, error rate, error-code frequency and
-latency quantiles — and it explicitly caveats that results depend on time of day,
-provider load and workload, and may not reflect users' actual workloads. MLPerf
-Inference (Reddi *et al.*, “MLPerf Inference Benchmark”, 2020 ACM/IEEE 47th International
-Symposium on Computer Architecture, pp. 446–459) fixes a quality bar and measures throughput
-and latency under standardised workloads, in four scenarios driven by its standardised load
-generator — Single-Stream, Multi-Stream, Server (Poisson arrivals bounded by a 90th or 99th
-percentile tail-latency limit) and Offline — with a Closed Division that pins both the model
-and an accuracy threshold, and an Open Division that pins neither. The August 2026 Internet-Draft *Benchmarking Methodology for
-Large Language Model Serving* formalises the same layer: streaming versus
-non-streaming, prefill versus decode, dynamic batching, context-dependent
-performance, workload specification and percentile estimation. All three measure
-**the inference system** — even their tail-latency bounds are set against a synthetic arrival
-process the benchmark chooses, whereas the timeout we measure is the arrival process the user
-happened to have. We measure **the user's request outcome**, which is why
-our workload is not synthetic and our denominators are ours.
+| Category | Work | The difference, in one line |
+|---|---|---|
+| Controlled-load and system benchmarking | LLMPerf (Ray project); MLPerf Inference (Reddi *et al.*, ISCA 2020) | they fix the offered load and score a **system**; we take the arrival process as it comes and score the **request outcome** |
+| Benchmarking *methodology* and vocabulary | Internet-Draft *Benchmarking Methodology for Large Language Model Serving* (draft-gaikwad-llm-benchmarking-methodology-01) | a serving-infrastructure standard — throughput, tokens per accelerator-second, scheduling fairness, memory pressure, prefix-cache and guardrail overhead — whose vocabulary our event schema maps onto rather than competes with; note its Application-Gateway boundary measures user-observable latency too, but only under a controlled synthetic load against a system the tester configures, the cooperative frame we drop |
+| Longitudinal outside-in monitoring | public LLM latency tracker (`llmlatency/llm-latency-tracker`; `llmlatency.dev/methodology`) | synthetic probes cannot observe a provider restriction, a retry burden, or an answer that arrived and was still unusable |
+| Considered, not cited | model-authenticity auditing — GateScope (arXiv:2604.21083) and the substitution audit (arXiv:2504.04715); also excluded: a failover study (arXiv:2607.15899, one narrow angle) and a vendor monitoring page | whether a provider is truthful about the model behind an endpoint is a different question from whether the service answered, in time — and each of those supplies its own ground truth to test against |
 
-**Continuous availability monitoring.** Public tracker datasets now publish millions
-of probes across tens of providers and regions, separating network time-to-first-byte
-from inference time-to-first-token, and commercial services describe themselves as
-"outside-in monitoring for artificial-intelligence APIs", covering latency,
-throughput, errors, regional degradation, timeout rates and silent brownouts. Longitudinal
-outside-in observation is therefore an established practice, and the existence of
-this literature is what makes the research question legitimate rather than exotic.
+**Shared means, different end.** Time to first streamed chunk, latency quantiles, error codes,
+retry counts: we reuse them and claim none of them. Each work above holds model behaviour fixed and
+varies the load, to produce a number describing a system. We vary nothing, to produce an account of
+what a paying user received — and the quantity none of them measures, model intelligence, is the one
+a user can settle for themselves, as section 1.1 argues, whereas delivery cannot be settled by
+attention.
 
-**Black-box auditing and honesty checks.** GateScope (*Behavioral Consistency and
-Transparency Analysis on Large Language Model API Gateways*, arXiv:2604.21083) audits
-ten commercial gateways for response behaviour, multi-turn consistency, billing,
-latency stability, model substitution, silent truncation and memory degradation, and
-reports advertised-versus-observed discrepancies. *Are You Getting What You Pay
-For? Auditing Model Substitution in LLM APIs* (arXiv:2504.04715) shares the
-epistemology — do not trust the provider's description — with a different target. Our
-posture is identical in method and different in question: GateScope asks whether a
-service behaves as it claims; we ask **what service quality an ordinary user
-actually experiences while submitting real work to it**.
-
-**Where the open space is.** One 2026 study of stateful failover across providers
-(ContinuityBench, arXiv:2607.15899) introduces a Continuity Preservation Rate and
-Continuity Latency Overhead precisely because *application programming interface
-availability is not user-level service continuity* — a request can be served and the
-user's task still fail. That is the same distinction this incident exposes from the
-other side, and it is the reason we treat **usable request rate**, retry burden and
-outcome class as first-class quantities rather than as error counts.
+**No ground truth of our own.** Because nothing reaches us but the provider's response, outcomes are
+classified by status codes, error payloads and streamed events, never by whether an answer looks
+wrong. That is also why the taxonomy in section 2.4 carries no judgement about answer content, and
+why every denominator here is defined by us rather than taken from a provider.
 
 What we therefore claim, narrowly: (i) the **submitted user request** as the unit of
 observation, with a six-class outcome taxonomy that separates provider failure from
@@ -607,7 +606,7 @@ conversations, 53 completed.
 
 ### 5.3 Unresolved
 
-The exact server-side path (queue vs prefill stall vs gateway); whether
+The exact server-side path (request queue, prefill stall, token-burst throttling, a plan's capacity budget, gateway); whether
 account/plan state contributes; a clean causal context-size/latency curve
 (would need a controlled sweep — deferred, §7); and separating timeout parks from
 tool-permission parks (now resolved: `trigger:` asserts 33 timeout / 38 dialog from
@@ -633,7 +632,7 @@ Stated prominently; they constrain every number above.
   provider-wide or population claim; "observed in this field sample" only.
 - **Client-perceived latency only**; timeouts are **right-censored** (we see
   submit and the park, not the server's own completion or first byte).
-- **No per-request token usage exists client-side**, so request size is bounded
+- **Per-request *input* occupancy is logged by the client (`usedTokens`), but output tokens, cached input tokens and the resource cost of a request are not**, so request size is bounded
   from transcript growth — a **lower bound**, not a measurement.
 - **Advertised context ("1M") is not a comparable unit** (§2.11): per-vendor
   tokenizers, nominal-vs-effective window, and here an advertised 1M against a
@@ -653,6 +652,13 @@ Stated prominently; they constrain every number above.
 - **Observational, not controlled:** the causal role of context size is
   **not** established, and **"the 1M preset causes the failures" is explicitly
   not claimed**.
+- **No resource denominator.** Every quantity here is per *request*, because a client cannot see
+  what the provider spent: power draw, fleet or region allocation, and the concurrency budget behind
+  an account tier are all invisible from outside. So a good usable request rate may mean a better
+  service or simply a bigger deployment, and this method cannot rank providers on efficiency — how
+  many users a given capacity can serve, or how good the answer is per unit of power consumed. That
+  comparison needs provider telemetry, which is why it is put to the provider in `ask_vendor.md`
+  rather than attempted here.
 - **No second provider**, so provider-neutrality of the schema (§7) is proposed,
   not demonstrated.
 

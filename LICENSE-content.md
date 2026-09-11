@@ -6,7 +6,7 @@
 Copyright (c) 2026 2makeitwork.
 
 This license covers everything in this repository **except** the executable
-tooling under `scripts/` and `tools/`, which is under the MIT license
+tooling under `scripts/`, which is under the MIT license
 (`LICENSE-code.md`).
 
 You are free to copy and redistribute the material in any medium or format, and

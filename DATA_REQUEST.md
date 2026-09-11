@@ -1,5 +1,11 @@
 # Data Request Protocol — per-request evidence to verify a provider's own QoS claim
 
+> **Pre-release, last revised 2026-09-11** (methodology v0.1). Definitions, wording and figures
+> may still change; cite a snapshot — a release tag or a commit, not a branch — so that a later
+> revision cannot move what your citation points at. Every figure quoted in this document set is
+> asserted against the shipped evidence by `scripts/analyze.py`, which fails when a number and the
+> evidence disagree and warns when a file is edited after the date above.
+
 *Companion to `paper_ai_QoS.md` (§2.11, §3.2, §4.3, §6). Provider-neutral: this is
 what we request from **any** provider before a service-quality claim — including a
 provider's own — can be checked server-side rather than inferred from the client.*

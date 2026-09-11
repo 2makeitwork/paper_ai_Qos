@@ -1,5 +1,15 @@
 # AI Service QoS — Independent Measurement of What Users Actually Receive
 
+**Author:** 2makeitwork — independent, unaffiliated. The handle is pseudonymous by choice and is not to
+be resolved to a person; no institution appears on this project's behalf anywhere, in any byline,
+citation or archive record.
+
+> **Pre-release, last revised 2026-09-11** (methodology v0.1). Definitions, wording and figures
+> may still change; cite a snapshot — a release tag or a commit, not a branch — so that a later
+> revision cannot move what your citation points at. Every figure quoted in this document set is
+> asserted against the shipped evidence by `scripts/analyze.py`, which fails when a number and the
+> evidence disagree and warns when a file is edited after the date above.
+
 > **North star.** An independent, outside-in measurement framework for evaluating the reliability, latency, usability, and failure behavior of AI services under real user workloads.
 
 An open, auditable way to measure what an AI service *does* rather than what it can answer, plus the first dataset it produced. **Qwen3.8-Max / Qoder CN is Case Study 1** — the first system measured, not the subject; the method is provider-neutral by construction and the roadmap (paper section 7) adds controlled single-factor experiments, a second provider, and continuous collection.
@@ -45,7 +55,7 @@ consecutive transitions gives time-to-first-chunk and generation time per turn
 | *(not published)* `PUBLICATION.md` | release strategy, status notes and the media plan; its citable content lives in `CITATION.cff`, the dataset card and `paper_ai_QoS.md` §1.4 |
 | `DATASET_CARD.md` | the dataset card, published as `README.md` of [the dataset repository](https://huggingface.co/datasets/2makeitwork/paper_ai_Qos) |
 | `CITATION.cff` | machine-readable citation for the dataset, paper and code |
-| `LICENSE` | what is covered by which license: text and data under Creative Commons Attribution 4.0, `scripts/` and `tools/` under MIT |
+| `LICENSE` | what is covered by which license: text and data under Creative Commons Attribution 4.0, `scripts/` under MIT |
 | `LICENSE-content.md` / `LICENSE-code.md` | Creative Commons Attribution 4.0 for text, tables, figures and data; MIT for the scripts |
 | `methodology.md` | anchors, sources, pipeline, exclusions |
 | `anonymization.md` | scrubbing policy and how it is machine-checked |
@@ -57,6 +67,7 @@ consecutive transitions gives time-to-first-chunk and generation time per turn
 | `scripts/analyze.py` | recomputes every number quoted in the report from `evidence/` alone and asserts them; regenerates `analysis/summary_tables.md` |
 | `scripts/latency_from_logs.py` | turns the client's phase-transition and context-occupancy log lines into a per-request lifecycle table (wait for first streamed chunk, turn total, send-to-stall, first-chunk-to-stall, timeout versus dialog park, tokens at send); `--since` scopes a collection round to its own incident |
 | `scripts/verify_dataset_card.py` | checks `DATASET_CARD.md` against the files it declares — config paths exist, tables are well-formed, stated row counts are true, required card sections present; run before any upload |
+| `scripts/check_release_sync.py` | compares the published data layer, file by file and hash by hash, across the working tree (or a tag), the Hugging Face dataset repository and a Zenodo record — the three update independently, so drift is the default state and this is how it is measured rather than assumed (`--ref v0.3.0-pre`, `--zenodo <record>`, `--zenodo-draft <id>` with a token) |
 | `scripts/log_mirror.py` | (local-only, gitignored output) append-only mirror of the live IDE logs into `logs_mirror/`, capturing each file as it rotates out and SHA-256-verifying committed regions to flag in-place tampering; run every minute by the user timer pair in `scripts/systemd/` (`qoder-log-mirror.timer` → `qoder-log-mirror.service scan --once`), and `snapshot` for a checksummed frozen tree |
 | `analysis/summary_tables.md` | the derived statistics, as generated |
 | `scripts/watcher/` | (local-only, gitignored output) `cdp_watch.js` DOM watcher over CDP — render-side candidate signals; since 2026-09-09 the log phase stream (§4.7) is the primary timing instrument and this is the cross-check (see the false-positive note in its header) |

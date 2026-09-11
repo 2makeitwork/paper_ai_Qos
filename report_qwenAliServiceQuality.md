@@ -1,5 +1,11 @@
 # Case Study 1 — Qwen3.8-Max through Qoder CN + Alibaba Cloud Model Studio
 
+> **Pre-release, last revised 2026-09-11** (methodology v0.1). Definitions, wording and figures
+> may still change; cite a snapshot — a release tag or a commit, not a branch — so that a later
+> revision cannot move what your citation points at. Every figure quoted in this document set is
+> asserted against the shipped evidence by `scripts/analyze.py`, which fails when a number and the
+> evidence disagree and warns when a file is edited after the date above.
+
 *Advertised 1M context, delivered timeouts. Part of **AI Service QoS — Independent Measurement of What Users Actually Receive** (methodology v0.1): this is the vendor-facing case report; the method itself is `paper_ai_QoS.md`.*
 
 > **Relationship to the paper.** `paper_ai_QoS.md` is the citable document for the

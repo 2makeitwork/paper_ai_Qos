@@ -49,7 +49,7 @@
 - operator hold: banners 32 resumed, median 30 s, total 90.5 min; permission dialogs 37, median 88 s, total 122.0 min
 
 
-Generated 2026-09-10 22:44 — rerun: `python3 scripts/analyze.py`
+Generated 2026-09-11 08:30 — rerun: `python3 scripts/analyze.py`
 
 
 ## Request lifecycle (frozen log snapshot; scripts/latency_from_logs.py)

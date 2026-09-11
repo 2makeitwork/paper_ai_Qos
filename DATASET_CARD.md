@@ -1,7 +1,4 @@
 ---
-# Paste this file into the dataset repository as README.md — the front matter and
-# the sections below are what the Hugging Face Dataset Card renders. See the
-# "How to publish" steps in PUBLICATION.md section 3.
 pretty_name: AI Service QoS — field evidence for a Qwen3.8-Max / Qoder CN incident
 tags:
   - ai-evaluation
@@ -46,6 +43,12 @@ configs:
 
 # AI Service QoS — field evidence
 
+> **Pre-release, last revised 2026-09-11** (methodology v0.1). Definitions, wording and figures
+> may still change; cite a snapshot — a release tag or a commit, not a branch — so that a later
+> revision cannot move what your citation points at. Every figure quoted in this document set is
+> asserted against the shipped evidence by `scripts/analyze.py`, which fails when a number and the
+> evidence disagree and warns when a file is edited after the date above.
+
 **AI Service QoS — Independent Measurement of What Users Actually Receive** — methodology v0.1, and the first data product of an independent, outside-in measurement framework. The system measured here is **Case Study 1**, not the subject: the framework claims provider neutrality and one provider is not proof of it — a second provider measured with *these same definitions and no new ones* is the test (paper section 7, Stage 3).
 
 Machine-checkable evidence for **"AI Service QoS: An Independent Outside-In Measurement Methodology, with Case Study 1 (Qwen3.8-Max / Qoder)"** (`paper_ai_QoS.md`, with the practitioner report
@@ -75,14 +78,24 @@ usable answer, and how long did I wait?* This dataset exists so that question ca
 be asked of a service from the outside, and so every number in the paper can be
 recomputed from these files rather than taken on trust.
 
-### Byte-for-byte check after publication
+### Verification after publication
 
-Three published files were downloaded back from the hub and compared with the local
- originals:
-`evidence/stats/request_lifecycle.csv` (22,292 bytes), `evidence/stats/session_size_stats.csv`
-(754 bytes) and `evidence/logs/phase_transitions.txt` — **all identical**. (Incidental
-finding for anyone scripting the client: `hf download --include` accepts repeated
+The whole published repository was downloaded back to an empty directory and compared file by
+file with the working tree: **34 of its 36 files were byte-identical** (measured 2026-09-11; the
+repository's commit history shows which revision that was). The two exceptions are
+known and intended — the hub's own `.gitattributes`, created with the repository, and
+`README.md`, which is this card with three lines of internal instruction removed (the source
+repository's `README.md` is a different document, its homepage). One caveat if you re-run the
+shipped scripts: the last line of `analysis/summary_tables.md` carries a generation timestamp,
+so that file moves on every run — a difference in when it was built, not in what it says.
+(Incidental finding for anyone scripting the client: `hf download --include` accepts repeated
 patterns but only honoured the last one, so pass one pattern per invocation.)
+
+Both scripts were then executed **inside that download**, with nothing else present:
+`scripts/verify_dataset_card.py` exits 0 and `scripts/analyze.py` passes 52 assertions against
+`evidence/`. The cross-document drift check between the paper and the case report prints an
+explicit skip there, because the narratives live in the source repository — a skip, never a
+silent pass.
 
 ### Composition
 
@@ -138,7 +151,7 @@ python3 -c "from datasets import load_dataset; \
     'context_growth','timeline_events','timeout_events']]; print('LOADABLE')"
 ```
 
-**State as published (2026-09-10, commit `16a35ca`).** Confirmed by the hub: the
+**State as published (first upload 2026-09-10, commit `16a35ca`; revised in place since).** Confirmed by the hub: the
 repository is public, 36 files, and the front matter was parsed — its tags carry
 `license:cc-by-4.0`, `size_categories:n<1K` and `language:en`. **Confirmed by the hub** later the same day
 (2026-09-10): its conversion endpoint returned **all six** configs with their `train`
@@ -175,9 +188,21 @@ own output, and a repository-wide gate re-checks every published file, link and
 ignored directory:
 
 ```bash
-python3 scripts/anonymize.py --input raw_evidence --output /tmp/check   # self-audit
-python3 tools/gen_doc_index.py && python3 tools/verify_docs.py           # the gate
+python3 scripts/analyze.py                  # re-derives and asserts every published figure
+python3 scripts/verify_dataset_card.py      # asserts this card against the files it declares
+python3 scripts/check_release_sync.py       # compares this repository's bytes with the source
+                                            # repository and the Zenodo record
 ```
+
+The first two run offline and exit 0 in either repository — the source repository and this
+data layer — against the files shipped here. The third reaches the hub (and Zenodo, given a
+record identifier) and is the release-time check that the copy you are reading is byte-for-byte
+the copy in the other places: it reports drift rather than asserting agreement, because the
+three locations are updated by different commands and nothing synchronises them. The self-audit
+of the anonymiser itself (`scripts/anonymize.py --input raw_evidence`) needs the raw logs, which
+are not published, and the document gate over links, personal data and ignore rules (`tools/`) is
+local-only tooling that is deliberately not part of either repository: the commands above are what
+a reader can actually run, so they are what this card asks a reader to run.
 
 Pseudonyms (`sess-NN` in round 1, `S1`… in round 2) are numbered by the data's own
 order; the mapping to real conversation identifiers is not published and cannot be
@@ -217,7 +242,8 @@ open. State each of these whenever the data is reused.
 ## Citation
 
 ```
-2makeitwork. "AI Service QoS: An Independent Outside-In Measurement Methodology,
+2makeitwork (independent, unaffiliated). "AI Service QoS: An Independent Outside-In
+Measurement Methodology,
 with Case Study 1 (Qwen3.8-Max / Qoder)." Dataset snapshot <tag or commit>, 2026.
 ```
 

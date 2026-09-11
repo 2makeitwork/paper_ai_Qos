@@ -1,5 +1,11 @@
 # Anonymization policy
 
+> **Pre-release, last revised 2026-09-11** (methodology v0.1). Definitions, wording and figures
+> may still change; cite a snapshot — a release tag or a commit, not a branch — so that a later
+> revision cannot move what your citation points at. Every figure quoted in this document set is
+> asserted against the shipped evidence by `scripts/analyze.py`, which fails when a number and the
+> evidence disagree and warns when a file is edited after the date above.
+
 Everything under `evidence/` is produced by `scripts/anonymize.py`, which
 builds a deterministic pseudonym map from the raw dump and refuses to finish
 if any forbidden pattern survives (exit code 1 + `LEAK` report). The map is

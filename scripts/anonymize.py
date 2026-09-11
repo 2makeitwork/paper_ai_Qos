@@ -28,15 +28,21 @@ UUID_RE = re.compile(r"\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f
 CACHE_RE = re.compile(r"\b([A-Za-z][A-Za-z0-9_]{1,}(?:-[A-Za-z0-9_]+)*?)-([0-9a-f]{8})\b")
 IP_RE = re.compile(r"\b192\.168\.\d{1,3}\.\d{1,3}\b")
 MODELID_RE = re.compile(r"\bmodel_17\d{11}_[a-z0-9]{6,8}\b")
-TENANT_RE = re.compile(r"\b019feedb[0-9a-f-]*\b")
+# Operator-specific values are derived at runtime, never written into this file: it is
+# published, and a literal home path, account name or account-id prefix would republish
+# precisely the identifiers this script exists to remove.
+HOME = str(Path.home())
+ACCOUNT = Path(HOME).name
+TENANT_RE = re.compile(r"\b019f[0-9a-f]{4}[0-9a-f-]{2,}\b")
 KEY_RE = re.compile(r"\bsk-[A-Za-z0-9]{16,}\b")
 ECHO_RE = re.compile(r'"command"|"command_names"|grep -r|python3 - <<')
 
 # Patterns match leaked VALUES, not policy prose: full LAN addresses (not the
 # "192.168.x.x" placeholder in anonymization.md), apiKey fields carrying a
 # string value (not the schema boolean "hasApiKey": true).
-FORBIDDEN = [r"/home/sven", r"\bsven\b", r"\blinx\b", r"192\.168\.\d{1,3}\.\d{1,3}",
-             r"sk-[A-Za-z0-9]{16}", r"019feedb", r"model_17\d{11}",
+FORBIDDEN = [re.escape(HOME), rf"\b{re.escape(ACCOUNT)}\b", r"\blinx\b",
+             r"192\.168\.\d{1,3}\.\d{1,3}", r"sk-[A-Za-z0-9]{16}",
+             r"\b019f[0-9a-f]{6}", r"model_17\d{11}",
              r'"[a-zA-Z]*apiKey"\s*:\s*"']
 
 
@@ -83,9 +89,9 @@ def build_map(input_dir: Path) -> dict[str, str]:
         mapping[token] = f"ws-{letter}-cache"
         mapping[name] = f"ws-{letter}"
     # 4. fixed identities
-    mapping["/home/sven/Documents/source"] = "/home/user/projects"
-    mapping["/home/sven"] = "/home/user"
-    mapping["sven@sven:"] = "user@host:"
+    mapping[HOME + "/Documents/source"] = "/home/user/projects"
+    mapping[HOME] = "/home/user"
+    mapping[f"{ACCOUNT}@{ACCOUNT}:"] = "user@host:"
     mapping["linx"] = "<host-1>"
     assert all(len(k) > 1 and any(c.isalpha() for c in k)
                for k in mapping if not k.startswith("192.168")), \
@@ -104,7 +110,7 @@ def build_map(input_dir: Path) -> dict[str, str]:
 
 
 def scrub(text: str, mapping: dict[str, str]) -> str:
-    # longest keys first so /home/sven/Documents/source wins over /home/sven
+    # longest keys first, so the deeper path wins over the bare home directory
     for token in sorted(mapping, key=len, reverse=True):
         text = text.replace(token, mapping[token])
     return text
