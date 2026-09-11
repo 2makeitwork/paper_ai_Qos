@@ -27,6 +27,12 @@ places that are written by three different commands, so the order matters:
    (or `--zenodo <record id>` once published). Exit 0 means every file's hash agrees in all three
    places.
 5. Publish. This is the only irreversible step, and it is deliberately a separate act.
+   The GitHub release note is authored in `RELEASE_NOTES.md` and applied with
+   `gh release edit <tag> --notes-file RELEASE_NOTES.md`, so the text a stranger reads is a
+   tracked file that `scripts/analyze.py` scans — not prose typed into a command line. The
+   release itself stays a **draft** until Zenodo's GitHub integration is enabled on the
+   author's account: a draft release is never archived, and a release published while the
+   integration is off is not archived afterwards either.
 
 Performed in this order on 2026-09-11: tag `v0.3.0-pre` at commit `8f96c47`, then both published
 copies brought to it — the checker reports no findings. Correcting an overstated reproducibility

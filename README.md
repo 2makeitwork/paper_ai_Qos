@@ -55,6 +55,7 @@ consecutive transitions gives time-to-first-chunk and generation time per turn
 | *(not published)* `PUBLICATION.md` | release strategy, status notes and the media plan; its citable content lives in `CITATION.cff`, the dataset card and `paper_ai_QoS.md` §1.4 |
 | `DATASET_CARD.md` | the dataset card, published as `README.md` of [the dataset repository](https://huggingface.co/datasets/2makeitwork/paper_ai_Qos) |
 | `CITATION.cff` | machine-readable citation for the dataset, paper and code |
+| `RELEASE_NOTES.md` | the text of the GitHub release note, authored here so it passes the same scans as everything else and pushed with `gh release edit <tag> --notes-file RELEASE_NOTES.md`; a release body describes the artifact, never the machinery that publishes it |
 | `LICENSE` | what is covered by which license: text and data under Creative Commons Attribution 4.0, `scripts/` under MIT |
 | `LICENSE-content.md` / `LICENSE-code.md` | Creative Commons Attribution 4.0 for text, tables, figures and data; MIT for the scripts |
 | `methodology.md` | anchors, sources, pipeline, exclusions |
