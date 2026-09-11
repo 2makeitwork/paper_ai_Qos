@@ -63,9 +63,23 @@ more than an extra tag. The superseded *draft releases* were deleted (their tags
 exactly one release exists and the wrong one cannot be published.
 
 At `v1.0.0` the archive draft and the dataset repository are both byte-identical to the tag —
-36 files, 753,344 bytes, zero findings against the tag and no internal instruction text in what is
+36 files, 757,653 bytes, zero findings against the tag and no internal instruction text in what is
 served, measured 2026-09-11 by
 `scripts/check_release_sync.py --ref v1.0.0 --zenodo-draft 22699009`, which reports `IN SYNC`.
+
+**The tag was moved, once, by the author's explicit instruction.** `v1.0.0` first pointed at commit
+`fd431d8`; two follow-up commits fixed published text (editorial routing notes in a heading of
+`abstract.md`, a local-only tool inventory in `README.md`, the release-procedure section addressed
+to the maintainer rather than to a reader) and the version was briefly bumped to `v1.0.1` to carry
+them forward. The author directed instead that they fold into `v1.0.0` by amending and
+force-pushing, so the citable snapshot is `ce31ea9` and the release was re-pointed at it
+(`gh release edit v1.0.0 --notes-file RELEASE_NOTES.md`). That is the exception to the rule above,
+not a revision of it: it was defensible only because the archive record was still an unpublished
+draft and nothing external cited `fd431d8`. Two consequences stated plainly: the superseded commit
+remains reachable by its hash (`github.com/…/commit/fd431d8` answers 200), so the old text is
+fetchable there until GitHub garbage-collects it — the same support request already outstanding for
+the pre-rewrite commits; and the dataset repository's own history carries the intermediate uploads
+as commits it cannot forget.
 
 **Authorship, decided 2026-09-11.** The creator is `2makeitwork` with an **empty affiliation**, and the
 record's `notes` field says so in words: the author is an independent, unaffiliated individual, and no
