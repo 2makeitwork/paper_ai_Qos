@@ -26,7 +26,7 @@ AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 One obligation that is not legal but is ours: if you re-run these scripts on your
-own installation, do not publish the raw output of `scripts/collect_evidence.sh`
+own installation, do not publish the raw output of the collector
 or the mirror tree — they contain local paths and conversation identifiers.
 Publish only what `scripts/anonymize.py` emits, and keep its self-audit passing
 (it exits nonzero if a personal pattern survives).

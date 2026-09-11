@@ -799,12 +799,13 @@ failing-session growth curve `evidence/stats/context_growth.csv`.
 `evidence/config/custom_models_byok.json`,
 `evidence/config/runtime_model_selection.txt`.
 
-**G. Measurement scripts.** `collect_evidence.sh`, `anonymize.py`, `analyze.py`
-(asserts every frozen number, now including the request-lifecycle table),
-`latency_from_logs.py` (reconstructs §4.3 from a log snapshot and emits
-`evidence/stats/request_lifecycle.csv`), `log_mirror.py` (retention +
-tamper-evidence), `watcher/cdp_watch.js` (DOM cross-check; candidate signals
-only). The lifecycle input is a **frozen snapshot**, so `analyze.py` can assert
+**G. Measurement scripts.** Published in this repository: `anonymize.py` (raw dump to
+`evidence/`, exiting nonzero if any forbidden pattern survives), `analyze.py` (asserts every
+frozen number, including the request-lifecycle table), `latency_from_logs.py` (reconstructs §4.3
+from a log snapshot and emits `evidence/stats/request_lifecycle.csv`), and the two checks named
+above. Held as project tooling and preserved in the archived source copy rather than here: the
+collector, the log mirror (retention and tamper-evidence) and the DOM watcher (cross-check only,
+candidate signals). The lifecycle input is a **frozen snapshot**, so `analyze.py` can assert
 it without re-reading the mutable live log.
 
 **H. Reproduction.** Install Qoder CN ≥ 1.1.x with a Model Studio token-plan BYOK

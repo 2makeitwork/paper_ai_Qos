@@ -8,13 +8,25 @@ now would renumber every `sess-NN` and invalidate the frozen bundle. Round 1
 
 ## Reproduce
 
+In this data layer one command does the checking, and it needs nothing but the shipped files:
+
 ```bash
-python3 scripts/log_mirror.py snapshot                       # freeze the log tree
+python3 scripts/analyze.py                                   # asserts the numbers below
+```
+
+The lifecycle table is rebuilt in the source repository, from a frozen log snapshot rather than
+the live tree:
+
+```bash
 python3 scripts/latency_from_logs.py raw_snapshots/20260910T155718/logs \
         --since 2026-09-10T00:00 \
         --emit-csv evidence/incident_20260910/request_lifecycle.csv
-python3 scripts/analyze.py                                   # asserts the numbers below
 ```
+
+`scripts/latency_from_logs.py` is published in the source repository. The snapshot it reads is
+not published anywhere — the raw logs carry local paths and real conversation identifiers — and
+the capture tooling is preserved in the archived source copy named in the dataset card's
+Citation section.
 
 * Frozen input: `raw_snapshots/20260910T155718` (419 files, `SHA256SUMS` manifest).
 * `--since` is a scope control, not a cosmetic filter: the same log tree carries
