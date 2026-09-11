@@ -1,8 +1,24 @@
 # AI Service QoS — Independent Measurement of What Users Actually Receive
 
-**Author:** 2makeitwork — independent, unaffiliated. The handle is pseudonymous by choice and is not to
-be resolved to a person; no institution appears on this project's behalf anywhere, in any byline,
-citation or archive record.
+Whether a model is good enough shows itself in a day of use. Whether the service behind it will
+answer — in time, for the work actually being attempted, on the day it matters — shows itself very
+unevenly: neither a capability leaderboard nor a provider status page reports it, and one banner
+text, "Response timeout", covered both requests that were merely slow and requests that were too
+large for the service's own declared input limit. This repository measures that second thing, the
+**quality of service (QoS)** an AI service actually delivers, one submitted request at a time,
+read out of the client's own log.
+
+Two questions decide whether any of this is worth your time, and they are the two a buyer or an
+operator of an AI service ends up asking: *if I give this service my real work, how often do I get
+a usable result?* and *what happens when the service is under load, when context gets large, when
+quota is approached, or when the provider degrades?* If either is a question you recognise, the
+[paper](paper_ai_QoS.md) below is the method and what one incident answered. If neither is,
+nothing here is for you.
+
+**Case Study 1** — Qwen3.8-Max — is the worked example that makes the method concrete, not the
+thing under measurement.
+
+**Author:** 2makeitwork — independent, unaffiliated.
 
 > **Released 2026-09-11 as v1.0.2** (methodology v0.1). This snapshot is frozen: later
 > corrections and additions ship as a new version with a new tag, never as an edit to the bytes a
