@@ -13,6 +13,25 @@ record. Nothing **published** as of 2026-09-11. A **draft record exists on the p
 stays a draft until someone clicks publish, which is the point: a draft can be discarded, a published
 record can never be deleted.
 
+**Release procedure, in the order that keeps the copies identical.** The data layer exists in three
+places that are written by three different commands, so the order matters:
+
+1. Edit, then run the gates (`scripts/analyze.py`, `scripts/verify_dataset_card.py`,
+   `python3 tools/verify_docs.py`). Run them **before** tagging, not after — `scripts/analyze.py`
+   rewrites `analysis/summary_tables.md`, whose last line carries a generation timestamp, so a
+   re-run after a sync produces one byte-level difference that the checker reports as drift.
+2. Commit, push, tag.
+3. Rebuild the published copies **from the tag**: upload the data-layer payload to the dataset
+   repository, and synchronise the Zenodo draft key by key.
+4. Measure, do not assert: `python3 scripts/check_release_sync.py --ref <tag> --zenodo-draft <id>`
+   (or `--zenodo <record id>` once published). Exit 0 means every file's hash agrees in all three
+   places.
+5. Publish. This is the only irreversible step, and it is deliberately a separate act.
+
+Performed in this order on 2026-09-11: tag `v0.3.0-pre` at commit `8f96c47`, then both published
+copies brought to it — the checker reports **36 of 36 files matching in the dataset repository and
+36 of 36 in this draft, no findings**, 732,485 bytes.
+
 **Authorship, decided 2026-09-11.** The creator is `2makeitwork` with an **empty affiliation**, and the
 record's `notes` field says so in words: the author is an independent, unaffiliated individual, and no
 institution is to be added to any byline, citation, dataset card or archive record on this project's
@@ -26,7 +45,7 @@ a draft revised today and published next week does not archive today's date.
 | Route | Record | Needs | Licence field |
 |---|---|---|---|
 | Manual deposit of the evidence | dataset, `deposit-dataset.json` | done: a token was supplied on 2026-09-11 (not stored in any file) and the draft exists; publishing is the remaining step | `cc-by-4.0` — verified against Zenodo's licence API, title "Creative Commons Attribution 4.0 International" |
-| GitHub integration | software, from a release | the repository enabled in Zenodo's GitHub settings **and a tag**: `main` is at `b6f248d` with today's work uncommitted, so there is nothing to release yet | `mit` — verified against the same API, title "MIT License", SPDX scheme, marked OSI-approved; note the archive also contains CC-BY-4.0 text and data, which one field cannot express |
+| GitHub integration | software, from a release | the repository enabled in Zenodo's GitHub settings **and a published GitHub release**: the tag `v0.3.0-pre` exists at commit `8f96c47` and `.zenodo.json` is committed at that tag, so only the release page and the integration toggle are missing — a draft release is not archived, and the release name becomes the record's version | `mit` — verified against the same API, title "MIT License", SPDX scheme, marked OSI-approved; note the archive also contains CC-BY-4.0 text and data, which one field cannot express |
 
 **How it is meant to be used, in this order**
 
