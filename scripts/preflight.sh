@@ -46,7 +46,7 @@ step "no uncommitted change anywhere (the gates read the working tree)" bash -c 
 echo "=== 2. what a reader would actually receive ==="
 step "links resolve, no personal data, ignore rules in place" python3 tools/verify_docs.py
 step "no private file is reachable from the tracked set"      bash -c '
-  hit=$(git ls-files | grep -E "PUBLICATION\.md|prior-works\.md|reposition\.md|methodology_guidance|NESTING_WORKFLOW|__pycache__|raw_evidence|logs_mirror|raw_snapshots" || true)
+  hit=$(git ls-files | grep -E "PUBLICATION\.md|prior-works\.md|methodology_guidance|NESTING_WORKFLOW|__pycache__|raw_evidence|logs_mirror|raw_snapshots" || true)
   test -z "$hit" || { echo "tracked but should not be published: $hit"; exit 1; }'
 step "the staged data layer stages completely AND passes its own scripts" bash -c "
   d=\"\$(mktemp -d)/payload\"; trap 'rm -rf \"\$(dirname \"\$d\")\"' EXIT

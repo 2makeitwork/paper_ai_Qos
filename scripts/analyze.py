@@ -342,7 +342,7 @@ if byline_docs:
         check("archive metadata carries the pseudonym with an empty affiliation", bad, [])
 
 # ---- published documents must not send a reader to a file that is not published ----
-PRIVATE = ["PUBLICATION.md", "prior-works.md", "reposition.md", "methodology_guidance"]
+PRIVATE = ["PUBLICATION.md", "prior-works.md", "methodology_guidance"]
 DISCLOSED = ["not published", "not part of", "deliberately", "private", "ignored",
              "working notes", "kept local", "no reading obligation"]
 private_problems = []

@@ -9,6 +9,7 @@
 ## Project identity (the headline to use everywhere)
 
 * Publication identity: **AI Service QoS — Independent Measurement of What Users Actually Receive**
+* Differentiating claim (for abstracts and listings): the novelty is of **perspective, not method** — the measurement point is the paying user's side, published in aggregate to check what a provider delivered, a vantage no prior external measurement occupies.
 * North star: An independent, outside-in measurement framework for evaluating the reliability, latency, usability, and failure behavior of AI services under real user workloads.
 * Release title (Stage 1): **AI Service QoS: An Independent Outside-In Measurement Methodology** — with the Qwen3.8-Max / Qoder incident as **Case Study 1**
 * Methodology version: **v0.1**

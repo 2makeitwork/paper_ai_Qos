@@ -48,7 +48,10 @@ not a mean), a provider-neutral outcome taxonomy (S/T/Q/F/U/A), explicit
 denominators (Usable Request Rate and companions), retry accounting that refuses
 to hide retries inside successes, and a machine-readable event schema. It fixes
 definitions *independently of any provider* so results can be compared across
-them.
+them. Its novelty is of **perspective, not of method**: the instruments are shared with prior external
+measurement, but the vantage — the paying user's side, published as a stratified public aggregate that
+checks a provider against its own quality-of-service claim without the provider's cooperation — is
+occupied by none of them.
 
 The Qwen3.8-Max / Qoder incident is the worked example. From the client's own
 runtime log we reconstruct the request lifecycle (`prompting → streaming →
@@ -97,6 +100,11 @@ unmistakable only after the subscription is paid for. A model that does not answ
 model that failed to speak: to that user, in that minute, it is no model at all. That asymmetry — not
 the wish for another quality axis — is why this measurement is needed and why the taxonomy in
 section 2.4 is built from what the interface reported rather than from what the user suspected.
+
+The novelty that follows is one of **perspective, not of method**: the instruments reviewed in
+section 1.4 are shared with prior external measurement and we claim none of them as new; what none
+of them occupies is the vantage — a reading taken on the paying user's side, published only in
+aggregate, to check what a provider delivered rather than to rank what a system computes.
 
 ### 1.2 Why request-level
 
@@ -172,9 +180,12 @@ so a provider cannot define away its own failures; (iii) **natural workload
 normalisation** by task group instead of a synthetic difficulty score or a single
 quality index; and (iv) the combination of reliability, latency distribution,
 provider restriction and retry accounting into one user-level account of service
-quality, reproducible from a client log alone. The historical analogue is the
-distinction between benchmarking a web server and measuring the experience of the
-web service it hosts.
+quality, reproducible from a client log alone. Each is modest on its own; the claim is the vantage
+they share. **What is genuinely new is perspective, not method** — none of the surveyed instruments
+measures on the paying user's side *and* publishes the result as a stratified public aggregate, and it
+is that combination, not any single metric, that no prior work occupies. The historical analogue is
+the distinction between benchmarking a web server and measuring the experience of the web service it
+hosts; the contemporary one, taken up in section 7.1, is broadband performance reporting.
 
 Two honesty notes. The case in §4 is the **motivating example, not the novelty
 claim** — a single account over ten days cannot rank providers, and we do not
@@ -699,6 +710,45 @@ not that system.
 **Methodology-freeze statement:** the definitions in §2 are to be fixed before
 any additional provider is measured, so no definition is adjusted after seeing
 another result — the primary guard against methodology drift.
+
+### 7.1 The end this serves
+
+The framework above is the means. The purpose is an institution that does not yet exist: a **public,
+user-side measure of AI-service delivery** — passive instrumentation that reads the same client log
+this paper reads, deployed inside ordinary integrated-development-environment and agent interfaces,
+and aggregated across many such clients into distributions that are comparable across providers and
+checkable with no provider's cooperation. It reports what neither a capability leaderboard nor a
+provider status page does: whether the service answered, in time, for *this* plan, *this* task group,
+*here*, at *this* hour.
+
+Its novelty is one of **perspective**, not of method or data. No instrument surveyed in section 1.4
+measures from the paying user's side and publishes the result as a stratified public aggregate: the
+external monitors there send fixed synthetic probes, and the serving-benchmark methodology needs the
+operator's cooperation. The closest working analogue is broadband performance reporting, not another
+AI benchmark — providers advertise speeds "measured under controlled conditions" and publish almost
+nothing about the conditions, while the number users can actually consult is a public,
+measurement-based service broken out by provider, technology, region and time of day, reliable
+precisely because it is reported by the party who experiences it rather than by the party being
+measured. An AI-service equivalent would let a buyer settle the question section 1.1 says they
+cannot: not *is this model smart* — which discloses itself in a day — but *does it deliver, for my
+situation*, where the honest answer differs between two neighbours the way the best carrier in one
+district is not the best thirty kilometres away. Because it is collected on the user's side and
+published only statistically, it is the one measure of delivery a provider cannot special-case the
+way it can a benchmark's fixed synthetic probes.
+
+Two things follow, held here as incentives rather than achievements. The measurement is adversarial
+to the seller: a provider's quality-of-service claim becomes independently verifiable, so such an
+instrument would be resisted — and, as the telecom case predicts, resisted on security and privacy
+grounds rather than on the measurement's merit. And a user-side dataset is a *precondition* for any
+regime in which service-quality claims can be checked at all, which is the strongest reason to build
+it; that is a claim about what becomes possible, not about what this paper's data proves. Two design
+duties belong to that goal and are not yet discharged. The observation is a request's outcome and
+timing and never its content, and a published aggregate pools across time, so no single request or
+hour is carried into the result; the residual duty is a minimum-cell-size rule, because a bin so rare
+as to hold only a handful of requests — an uncommon plan in a quiet region for an unusual task group —
+edges toward naming a subscriber, and a corporate user's traffic is itself commercially sensitive.
+And whether to press the accountability point in regulatory terms is a choice we flag rather than
+take, because advocacy would read against the provider neutrality the rest of the paper defends.
 
 ---
 

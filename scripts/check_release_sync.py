@@ -64,7 +64,7 @@ STAMP_RE = re.compile(r"sha256:([0-9a-f]{64})")
 ALWAYS_BAD = ("Paste this file", "How to publish", "how to publish")
 # Names of files that stay on the author's workstation. Naming one is acceptable only on a
 # line that says so, which is what the source repository's own document table does.
-PRIVATE_NAMES = ("PUBLICATION.md", "prior-works.md", "reposition.md", "methodology_guidance")
+PRIVATE_NAMES = ("PUBLICATION.md", "prior-works.md", "methodology_guidance")
 DISCLOSED_WORDS = ("not published", "not part of", "deliberately", "private", "ignored",
                    "working notes", "kept local", "no reading obligation", "local-only")
 

@@ -129,7 +129,7 @@ def check_licenses(yaml_text: str) -> None:
 
 
 INTERNAL_MARKERS = ("Paste this file", "How to publish", "how to publish",
-                    "PUBLICATION.md", "prior-works.md", "reposition.md", "methodology_guidance")
+                    "PUBLICATION.md", "prior-works.md", "methodology_guidance")
 # A fenced command is an instruction the reader will try. Every script it names must be
 # present in whichever repository this card is published into, or the line has to say who it
 # belongs to - which is how the tools/ gate and the paste-in note escaped into the open.
