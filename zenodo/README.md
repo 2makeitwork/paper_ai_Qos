@@ -17,9 +17,10 @@ record can never be deleted.
 places that are written by three different commands, so the order matters:
 
 1. Edit, then run the gates (`scripts/analyze.py`, `scripts/verify_dataset_card.py`,
-   `python3 tools/verify_docs.py`). Run them **before** tagging, not after — `scripts/analyze.py`
-   rewrites `analysis/summary_tables.md`, whose last line carries a generation timestamp, so a
-   re-run after a sync produces one byte-level difference that the checker reports as drift.
+   `python3 tools/verify_docs.py`) — or run `./scripts/preflight.sh`, which runs them in order and
+   prints `READY` or `NOT READY TO PUBLISH`. A verification run cannot dirty the tree: `analyze.py`
+   rewrites `analysis/summary_tables.md` only when the content hash in its last line changes, so
+   re-running on the same statistics leaves that file, and its timestamp, exactly where they were.
 2. Commit, push, tag.
 3. Rebuild the published copies **from the tag**: upload the data-layer payload to the dataset
    repository, and synchronise the Zenodo draft key by key.
@@ -37,14 +38,20 @@ places that are written by three different commands, so the order matters:
    author's account: a draft release is never archived, and a release published while the
    integration is off is not archived afterwards either.
 
-Performed in this order on 2026-09-11: tag `v0.3.0-pre` at commit `8f96c47`, then both published
-copies brought to it — the checker reports no findings. Correcting an overstated reproducibility
-claim the same morning produced `v0.3.0-pre.2` at commit `c711118`, which **supersedes** the first
-tag rather than moving it: a pushed tag is left where it is, because rewriting a reference someone
-else may have fetched costs more than an extra tag. Both published copies and this draft now sit at
-`v0.3.0-pre.2` — **36 files, 744,463 bytes, no findings against the tag, served text clean** — and
-the GitHub release `v0.3.0-pre.2` exists as a **draft**, because a draft release is not archived and
-Zenodo's GitHub integration has to be enabled on the author's account before the release is published.
+Performed on 2026-09-11, in this order: tag `v0.3.0-pre` at commit `8f96c47`, with both published
+copies brought to it. Correcting an overstated reproducibility claim the same morning produced
+`v0.3.0-pre.2` at `c711118`; making the gates test the published tree instead of this workstation
+produced `v0.3.0-pre.3` at `b56c1b3`, and naming the citable snapshot produced `v0.3.0-pre.4` at
+`eef47c1` — **that is the tag to cite**. Superseded tags are left where they are rather than moved:
+rewriting a reference someone else may already have fetched costs more than an extra tag.
+
+The draft record and the dataset repository both sit at `v0.3.0-pre.4` — 36 files, 751,475 bytes,
+zero findings against the tag and no internal instruction text in what is served, measured
+2026-09-11 by `scripts/check_release_sync.py --ref v0.3.0-pre.4 --zenodo-draft 22699009`, which
+reports `IN SYNC`. The GitHub release `v0.3.0-pre.4` exists as a **draft with no assets on
+purpose**, because a draft release is not archived and Zenodo's GitHub integration has to be
+enabled on the author's account before the release is published. The superseded `v0.3.0-pre.2`
+draft release was deleted, keeping its tag, so that exactly one release can be published.
 
 **Authorship, decided 2026-09-11.** The creator is `2makeitwork` with an **empty affiliation**, and the
 record's `notes` field says so in words: the author is an independent, unaffiliated individual, and no
