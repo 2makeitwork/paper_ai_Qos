@@ -258,8 +258,10 @@ with Case Study 1 (Qwen3.8-Max / Qoder)." Dataset snapshot <tag or commit>, 2026
 **What to cite, in order.** The paper is the object; this dataset is its evidence. Cite
 `paper_ai_QoS.md` at a tag for the method and the findings, this repository for the observations, and
 the archived snapshot when the citation needs an identifier that cannot move: concept DOI
-[10.5281/zenodo.22701430](https://doi.org/10.5281/zenodo.22701430) for the released software in any
-version, or [10.5281/zenodo.22701431](https://doi.org/10.5281/zenodo.22701431) for `v1.0.0`.
+[10.5281/zenodo.22701430](https://doi.org/10.5281/zenodo.22701430) covers every archived version of
+the released software, while each version carries its own — `v1.0.0` is
+[10.5281/zenodo.22701431](https://doi.org/10.5281/zenodo.22701431) and `v1.0.1` is
+[10.5281/zenodo.22701701](https://doi.org/10.5281/zenodo.22701701).
 
 Cite the **snapshot**, name the **collection round**, and cite the **client version
 plus service** rather than the model alone — a client-side watchdog misattributed to

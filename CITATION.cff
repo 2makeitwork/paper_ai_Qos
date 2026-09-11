@@ -20,7 +20,7 @@ type: dataset
 version: "1.0.1"    # matches the tag v1.0.1, the citable snapshot; the release gate and scripts/analyze.py both refuse if the two differ
 date-released: "2026-09-11"   # the release date of this version
 doi: 10.5281/zenodo.22701430   # concept DOI — all archived versions, from Zenodo's GitHub integration
-# Version identifiers: v1.0.0 = 10.5281/zenodo.22701431 (and v1.0.1 gets its own on release).
+# Version identifiers: v1.0.0 = 10.5281/zenodo.22701431, v1.0.1 = 10.5281/zenodo.22701701.
 # Cite the concept identifier unless a specific archived version matters.
 # dataset-doi: none — no separate evidence deposit exists (the draft was discarded 2026-09-11).
 # The evidence is preserved by the dataset repository and by the archived source copies above.
@@ -33,7 +33,7 @@ license: >-
 # tag: v1.0.1. Zenodo's GitHub integration archives each published release automatically and
 # mints the version identifier; the record above proves the hook fires.
 keywords:
-  - AI service quality
+  - AI service qualityscripts/preflight.sh
   - large language model service measurement
   - timeout
   - latency distribution
@@ -54,6 +54,8 @@ identifiers:
     value: 10.5281/zenodo.22701430   # concept DOI — every archived version of this release family
   - type: doi
     value: 10.5281/zenodo.22701431   # version DOI of v1.0.0
+  - type: doi
+    value: 10.5281/zenodo.22701701   # version DOI of v1.0.1
 # Release history. A list is kept in comments because CITATION File Format 1.2 defines no `versions`
 # key (checked against the official schema on 2026-09-11: the allowed top-level keys are abstract,
 # authors, cff-version, commit, contact, date-released, doi, identifiers, keywords, license,
