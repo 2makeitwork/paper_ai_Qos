@@ -153,9 +153,8 @@ instruments (§3), the case (§4), and what it does and does not establish (§5�
 
 External, black-box measurement of large-language-model services is **not new** and this paper claims
 no priority for it. The instruments are shared with the work below; the purpose is not. Only the
-category and the difference are stated here; the works themselves, how far each was read, and the
-reasons for the exclusions are in **References**, so nothing below asks the reader to take a
-characterisation on trust or to accept an omission without a name.
+category and the difference are stated here; the works and the grounds for the exclusions are in
+**References**.
 
 | Category | Work | The difference, in one line |
 |---|---|---|
@@ -771,47 +770,35 @@ provider — a step left deliberately open, to be taken only if there is interes
 
 ## References
 
-Section 1.4 characterises each of these, so each is listed here even where this paper adopts none
-of its conclusions. Characterising someone's work is the obligation; borrowing its conclusions is
-not the trigger. How far each was read is stated per entry rather than hidden, because an
-abstract-level characterisation is honest only when it says so.
-
-**Positioned against (section 1.4, first three rows)**
+**Positioned against**
 
 1. The Ray project. **LLMPerf** — repository `github.com/ray-project/llmperf`, whose measured
-   quantities are defined by `token_benchmark_ray.py`. Characterised from the project's own
-   documentation; the source reading is an open item.
+   quantities are defined by `token_benchmark_ray.py`. *Documentation read, source not read in
+   full.*
 2. V. J. Reddi *et al.* **MLPerf Inference Benchmark.** *Proceedings of the 47th Annual
-   International Symposium on Computer Architecture (ISCA 2020)*, pp. 446–459, IEEE, 2020. Venue
-   and pages verified against a citing bibliography, not against the paper's own text; the four
-   LoadGen scenarios and the closed/open division split described in section 1.4 come from the
-   operator's summary of it, and the full reading is open.
+   International Symposium on Computer Architecture (ISCA 2020)*, pp. 446–459, IEEE, 2020. *Not
+   read in full* — the scenario detail in section 1.4 comes from MLPerf's own documentation.
 3. **Benchmarking Methodology for Large Language Model Serving.** Internet-Draft
-   `draft-gaikwad-llm-benchmarking-methodology-01`, 2026. A work in progress, not an approved
-   standard; cited for the vocabulary this schema could be mapped onto rather than competed with.
-   Read against the primary text on 2026-09-11.
+   `draft-gaikwad-llm-benchmarking-methodology-01`, 2026 — a work in progress, not an approved
+   standard, cited for vocabulary. *Primary text read, 2026-09-11.*
 4. The llmlatency project. **LLM Latency Tracker** — dataset
    `huggingface.co/datasets/llmlatency/llm-latency-tracker`, methodology at
-   `llmlatency.dev/methodology`. The closest public longitudinal comparator; characterised from its
-   published methodology, full reading open.
+   `llmlatency.dev/methodology` — the closest public longitudinal comparator. *Methodology page
+   read, nothing further.*
 
-**Considered and deliberately not relied upon (section 1.4, last row)** — listed so the exclusion can
-be checked rather than taken on trust, since a rejection that names nothing is an omission rather
-than a decision:
+**Considered, not cited** — abstracts read, full texts not; excluded on subject, not on method:
 
 5. **GateScope: Behavioral Consistency and Transparency Analysis on Large Language Model API
-   Gateways.** arXiv:2604.21083. Method nearest to ours, subject not: it asks whether a gateway
-   serves what it advertises, which is an authenticity question rather than a delivery one.
+   Gateways.** arXiv:2604.21083. Nearest in method, furthest in question: whether a gateway serves
+   what it advertises is an authenticity question, not a delivery one.
 6. **Are You Getting What You Pay For? Auditing Model Substitution in LLM APIs.** arXiv:2504.04715.
    Authenticity by adversarial testing and hardware attestation; this paper claims nothing about
-   which model answered, so it is not a comparator.
-7. A stateful-failover continuity study, arXiv:2607.15899. Too narrow an angle — delivery across
-   provider failover — to carry a general claim, and the distinction it would have supported is
-   evidenced by Case Study 1 itself.
+   which model answered.
+7. A stateful-failover continuity study, arXiv:2607.15899. Delivery across provider failover —
+   too narrow an angle to carry a general claim.
 
-**Primary sources for the case study** — the service's own statements, captured as dated artifacts
-rather than quoted from memory, because the finding is precisely that the documented codes and the
-observed behaviour diverge:
+**Primary sources for the case study** — the service's own statements, captured as dated artifacts,
+since the finding is that the documented codes and the observed behaviour diverge:
 
 8. **Model Studio error-code dictionary** as fetched by the client,
    `evidence/config/error-code-dictionary_extract.json` (version `1.0.11`, 2026) — where the
@@ -820,11 +807,10 @@ observed behaviour diverge:
    `evidence/config/model_registry_qmodel_38max.txt` — the declared input limit against the
    1M-context presets offered beside it.
 10. **The evidence bundle**: the dataset repository `2makeitwork/paper_ai_Qos`, archived under
-    concept identifier `10.5281/zenodo.22701430`. Every number in this paper is re-derived from it
-    by `scripts/analyze.py`, which fails when a figure and the evidence disagree.
-
-The vendor-facing case report for the same incident, carrying the per-event tables, the reproduction
-steps and the requests made of the provider, is `report_qwenAliServiceQuality.md` in this repository.
+    concept identifier `10.5281/zenodo.22701430`, re-derived and asserted by `scripts/analyze.py`.
+11. **The vendor-facing case report** for the same incident, with the per-event tables, the
+    reproduction steps and the requests made of the provider:
+    `report_qwenAliServiceQuality.md` in this repository.
 
 ---
 
