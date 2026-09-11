@@ -41,9 +41,9 @@ configs:
         path: evidence/logs/timeout_resume_events.csv
 ---
 
-# AI Service QoS — field evidence
+# AI Service QoS — the request-level evidence behind the method paper
 
-> **Released 2026-09-11 as v1.0.0** (methodology v0.1). This snapshot is frozen: later
+> **Released 2026-09-11 as v1.0.1** (methodology v0.1). This snapshot is frozen: later
 > corrections and additions ship as a new version with a new tag, never as an edit to the bytes a
 > citation points at — cite the tag or the Digital Object Identifier, not a branch. Two version
 > numbers mean two different things here: the tag names this public snapshot, while *methodology
@@ -86,7 +86,7 @@ recomputed from these files rather than taken on trust.
 The whole published repository was downloaded back into an empty directory and compared file by
 file with the tag it was built from — which is exactly what `scripts/check_release_sync.py` does,
 so this is re-checkable by a reader rather than autobiographical. Measured 2026-09-11 against tag
-`v1.0.0`: **every data-layer file agrees byte for byte**, `README.md` included — that file
+`v1.0.1`: **every data-layer file agrees byte for byte**, `README.md` included — that file
 is this card with its three internal-instruction lines removed, and the source repository's own
 `README.md` is a different document, its homepage. The hub holds one file no tag contains: the
 `.gitattributes` it created with the repository. The generated table ends with a line carrying a
@@ -254,6 +254,12 @@ open. State each of these whenever the data is reused.
 Measurement Methodology,
 with Case Study 1 (Qwen3.8-Max / Qoder)." Dataset snapshot <tag or commit>, 2026.
 ```
+
+**What to cite, in order.** The paper is the object; this dataset is its evidence. Cite
+`paper_ai_QoS.md` at a tag for the method and the findings, this repository for the observations, and
+the archived snapshot when the citation needs an identifier that cannot move: concept DOI
+[10.5281/zenodo.22701430](https://doi.org/10.5281/zenodo.22701430) for the released software in any
+version, or [10.5281/zenodo.22701431](https://doi.org/10.5281/zenodo.22701431) for `v1.0.0`.
 
 Cite the **snapshot**, name the **collection round**, and cite the **client version
 plus service** rather than the model alone — a client-side watchdog misattributed to

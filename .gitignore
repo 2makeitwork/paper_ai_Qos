@@ -30,6 +30,7 @@ prior-works.md
 # 2026-09-10. Everything a reader needs is in the published set instead -- CITATION.cff,
 # the dataset card's Citation section, LICENSE, and paper_ai_QoS.md section 1.4.
 PUBLICATION.md
+AGENTS.md
 
 # local-only inputs and superseded working documents; they were excised from the
 # published history on 2026-09-10 and must not be re-added

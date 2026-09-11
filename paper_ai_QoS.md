@@ -4,7 +4,7 @@
 added to any listing, citation or archive record on this project's behalf. The handle is
 pseudonymous by choice and is not to be resolved to a person.
 
-> **Released 2026-09-11 as v1.0.0** (methodology v0.1). This snapshot is frozen: later
+> **Released 2026-09-11 as v1.0.1** (methodology v0.1). This snapshot is frozen: later
 > corrections and additions ship as a new version with a new tag, never as an edit to the bytes a
 > citation points at — cite the tag or the Digital Object Identifier, not a branch. Two version
 > numbers mean two different things here: the tag names this public snapshot, while *methodology

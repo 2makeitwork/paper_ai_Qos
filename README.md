@@ -4,7 +4,7 @@
 be resolved to a person; no institution appears on this project's behalf anywhere, in any byline,
 citation or archive record.
 
-> **Released 2026-09-11 as v1.0.0** (methodology v0.1). This snapshot is frozen: later
+> **Released 2026-09-11 as v1.0.1** (methodology v0.1). This snapshot is frozen: later
 > corrections and additions ship as a new version with a new tag, never as an edit to the bytes a
 > citation points at — cite the tag or the Digital Object Identifier, not a branch. Two version
 > numbers mean two different things here: the tag names this public snapshot, while *methodology
@@ -15,50 +15,63 @@ citation or archive record.
 
 > **North star.** An independent, outside-in measurement framework for evaluating the reliability, latency, usability, and failure behavior of AI services under real user workloads.
 
-An open, auditable way to measure what an AI service *does* rather than what it can answer, plus the first dataset it produced. **Qwen3.8-Max / Qoder CN is Case Study 1** — the first system measured, not the subject; the method is provider-neutral by construction and the roadmap (paper section 7) adds controlled single-factor experiments, a second provider, and continuous collection.
+## What this repository contributes
 
-The repository holds the method ([`paper_ai_QoS.md`](paper_ai_QoS.md),
-methodology v0.1), the measurement pipeline, and the anonymised evidence — and
-**Case Study 1** ([`report_qwenAliServiceQuality.md`](report_qwenAliServiceQuality.md)),
-the vendor-facing report on how the Qoder CN IDE + Alibaba Cloud Model Studio
-(token plan) behaved when agent-session contexts exceeded what the service
-actually processed. One dataset is included, published under the
-[`DATASET_CARD.md`](DATASET_CARD.md) front matter.
+**The [paper](paper_ai_QoS.md) is the contribution.** It specifies a request-level method for
+measuring the quality of service an artificial-intelligence service actually delivers to a user:
+the unit of observation, a latency distribution rather than a mean, a six-class outcome taxonomy
+that keeps the provider's own codes beside it, explicit denominators, retry accounting that
+refuses to hide retries inside successes, a task taxonomy following real work, and a
+machine-readable event schema — all defined independently of any provider's vocabulary, so results
+are comparable across services and verifiable without a provider's cooperation.
 
-**Headline**: the model registry offers 1M-context presets for a model entry
-whose own `maxInputTokens` is 180,000; oversized requests fail as opaque
-"Response timeout" events (client error code 80408), never as the service's
-own `80411 "Input content too long"` error — and the resume button re-sends
-the identical request. The loop is deterministic within a burst but
-intermittent across time (the same oversized request can succeed minutes
-later): a fixed client watchdog against time-varying server latency, with
-oversized context raising the odds rather than acting as a hard gate.
+The novelty is one of **perspective, not of method**. The instruments are shared with prior
+external measurement of model services, and [section 1.4](paper_ai_QoS.md) names who and how this
+differs. What none of that work occupies is the vantage: a reading taken on the paying user's side,
+published as a stratified public aggregate, which checks what a provider *delivered* rather than
+ranks what a system *computes*. [Section 7.1](paper_ai_QoS.md) states the institution that serves
+— a public, user-side measure of AI-service delivery — with broadband performance reporting as its
+working analogue.
 
-Every timeout is corroborated by a second, independent stream — the client's own
-task tracker in `windowN/quest.log`, whose `ActionRequired` state arrives within
-234 ms of each banner (report §4.6). Vocabulary note: the vendor's **`task`**
-means one chat *conversation*, not one chat box (report §3.1).
+Everything else here is a **means** to that end, and is labelled as such:
 
-Every *interaction* is timestamped by a third stream —
-`[ACPProgressStateMachine] State transition: A -> B, trigger: T, sessionId: S` in
-`windowN/agent.log`, whose triggers name send-pressed, first streamed "Thinking…"
-chunk, tool dialog, timeout banner, resume click and turn-over. Subtracting
-consecutive transitions gives time-to-first-chunk and generation time per turn
-(report §4.7); `scripts/collect_evidence.sh` step 10 extracts it.
+| | Artifact | Role |
+|---|---|---|
+| **end** | [`paper_ai_QoS.md`](paper_ai_QoS.md) | the method, its definitions, its findings, its limits |
+| **means** | [`report_qwenAliServiceQuality.md`](report_qwenAliServiceQuality.md) | **Case Study 1** — the vendor-facing case report that motivated the method and carries the per-event tables, the reproduction steps and the asks |
+| **means** | [`evidence/`](evidence/) + [the dataset](https://huggingface.co/datasets/2makeitwork/paper_ai_Qos) | the anonymised observations every number is re-derived from |
+| **means** | [`methodology.md`](methodology.md), [`anonymization.md`](anonymization.md) | detection anchors, provenance, what re-runs from what, the scrubbing policy |
+| **means** | [`scripts/`](scripts/) | the collector, the anonymiser, and the checks that re-derive and assert every published figure |
+
+**Case Study 1** is the first system measured, not the subject: Qwen3.8-Max through the Qoder CN
+integrated development environment and Alibaba Cloud Model Studio, over a ten-day field incident.
+Its headline, in one paragraph rather than twenty — the report has the detail: a model registry
+offering 1M-context presets for an entry whose own declared input limit is 180,000 tokens;
+oversized requests failing as opaque "Response timeout" banners (client error code 80408) while the
+service's own `80411 "Input content too long"` code never fired once; the resume button
+re-submitting the identical request; and the whole loop deterministic within a burst but intermittent
+across time, which is a fixed client watchdog meeting time-varying server latency — context size
+raising the odds, never acting as a hard gate.
+
+Three independent log streams make the account checkable rather than anecdotal: the banner events,
+the client's own task tracker (whose `ActionRequired` state arrives within 234 ms of each banner,
+report §4.6 — and whose `task` names one chat *conversation*, not one chat box, report §3.1), and
+the per-interaction phase stream (report §4.7), which timestamps every send, first streamed chunk,
+tool dialog, banner, resume click and turn-over. That is how a user-side measurement gets a
+latency distribution instead of a complaint.
 
 ## Layout
 
 | Path | Contents |
 |---|---|
-| `paper_ai_QoS.md` | the paper: method first, the incident as its worked example (§1.4 positions it against prior measurement work) |
-| `abstract.md` | the single-paragraph abstract used on the paper page |
-| `report_qwenAliServiceQuality.md` | the practitioner report (summary, findings, data, asks, limitations, reproduction) |
-| *(not published)* `prior-works.md` | search log behind §1.4, gitignored by decision; each cited work carries its own identifier in `PUBLICATION.md` §2.5 instead |
+| `paper_ai_QoS.md` | **the paper — the contribution**: the method and definitions, the findings, the limits; §1.4 positions it against prior measurement work and §7.1 states what it is for |
+| `abstract.md` | shorter forms of the same description (one line, about 300 characters, three sentences); the authoritative abstract is the one in `paper_ai_QoS.md` |
+| `report_qwenAliServiceQuality.md` | the case report for the provider — the means: summary, findings, per-event data, asks, limitations, reproduction |
 | `ask_vendor.md` | the open questions addressed to the IDE vendor and the model service, each stated as measured-by-us, answer-unknown |
-| *(not published)* `PUBLICATION.md` | release strategy, status notes and the media plan; its citable content lives in `CITATION.cff`, the dataset card and `paper_ai_QoS.md` §1.4 |
 | `DATASET_CARD.md` | the dataset card, published as `README.md` of [the dataset repository](https://huggingface.co/datasets/2makeitwork/paper_ai_Qos) |
-| `CITATION.cff` | machine-readable citation for the dataset, paper and code |
-| `RELEASE_NOTES.md` | the text of the GitHub release note, authored here so it passes the same scans as everything else and pushed with `gh release edit <tag> --notes-file RELEASE_NOTES.md`; a release body describes the artifact, never the machinery that publishes it |
+| `CITATION.cff` | machine-readable citation, with the archive identifiers |
+| `AGENTS.md` | who may commit, push, tag and publish, and what counts as reader-facing text — rules for humans and AI agents alike |
+| `RELEASE_NOTES.md` | the text of the GitHub release note, authored as a tracked file so it passes the same scans as everything else |
 | `LICENSE` | what is covered by which license: text and data under Creative Commons Attribution 4.0, `scripts/` under MIT |
 | `LICENSE-content.md` / `LICENSE-code.md` | Creative Commons Attribution 4.0 for text, tables, figures and data; MIT for the scripts |
 | `methodology.md` | anchors, sources, pipeline, exclusions |
@@ -75,6 +88,19 @@ consecutive transitions gives time-to-first-chunk and generation time per turn
 | `scripts/log_mirror.py` | append-only mirror of the live IDE logs, capturing each file as it rotates out and SHA-256-verifying committed regions to flag in-place tampering; run every minute by the user timer pair in `scripts/systemd/` (`qoder-log-mirror.timer` → `qoder-log-mirror.service scan --once`), and `snapshot` for a checksummed frozen tree. Its `logs_mirror/` output is not published |
 | `analysis/summary_tables.md` | the derived statistics, as generated |
 | `scripts/watcher/` | `cdp_watch.js` DOM watcher over CDP — render-side candidate signals; since 2026-09-09 the log phase stream (§4.7) is the primary timing instrument and this is the cross-check (see the false-positive note in its header). Its capture output is not published |
+
+## Cite this
+
+| Object | Identifier |
+|---|---|
+| The method and findings | `paper_ai_QoS.md` in this repository, at a **tag** — cite the paper, and the snapshot you read |
+| The archived software (every version) | concept DOI [10.5281/zenodo.22701430](https://doi.org/10.5281/zenodo.22701430) — always resolves to the latest archived version; `v1.0.0` is [10.5281/zenodo.22701431](https://doi.org/10.5281/zenodo.22701431) |
+| The evidence, loadable | <https://huggingface.co/datasets/2makeitwork/paper_ai_Qos> |
+| A specific number | the commit that produced it, plus `python3 scripts/analyze.py`, which re-derives it from `evidence/` |
+
+`CITATION.cff` carries the same in machine-readable form, and the dataset card's Citation section
+states the rules: cite a snapshot not a branch, name the collection round, and cite the client
+version plus the service rather than the model alone.
 
 ## Verify this repository yourself
 

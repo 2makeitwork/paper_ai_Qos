@@ -173,10 +173,10 @@ if [[ -n "$REF" ]]; then
     echo "     --notes-file RELEASE_NOTES.md) — that event is what the integration would archive."
     n=$((n+1))
   fi
-  if ! grep -q '^doi:' CITATION.cff; then
-    echo "  $n. Zenodo: publish record 22699009 (https://zenodo.org/deposit/22699009). Correctable"
-    echo "     afterwards, never deletable. Then write the DOI into CITATION.cff, the dataset card"
-    echo "     and README, and re-run this script."
+  if grep -q '^# dataset-doi: pending' CITATION.cff; then
+    echo "  $n. Zenodo: publish record 22699009 (https://zenodo.org/deposit/22699009) — the evidence"
+    echo "     bundle. Correctable afterwards, never deletable. Then replace the pending marker in"
+    echo "     CITATION.cff with the identifier and re-run this script."
     n=$((n+1))
   fi
   [[ -n "${ZENODO_TOKEN:-}" ]] && echo "  $n. Revoke the Zenodo access token in use: it was typed into a chat transcript."

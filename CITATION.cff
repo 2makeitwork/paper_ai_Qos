@@ -1,13 +1,16 @@
 # Human- and machine-readable citation for this repository.
-# The doi: and date-released fields are filled at release, when the Hugging Face
-# dataset and paper pages exist. Until then cite by commit.
-cff-version: 1.3.0
+# doi: is the concept identifier of the archived software, which resolves to the latest
+# archived version; the version identifiers are listed below. The evidence-record identifier is
+# still pending, and that pending marker is what scripts/preflight.sh checks to decide whether to
+# remind anyone about it.
+cff-version: 1.2.0
 message: >-
   Cite the paper for the method and findings, the dataset for the evidence
   bundle, and the commit for the tooling that produced a number. See
   the dataset card's Citation section for the citation rules (snapshot not branch; name
   the collection round; cite client version plus service, not the model alone).
-  Released 2026-09-11 as version 1.0.0 (methodology v0.1): cite the tag or the DOI, never a branch.
+  Released 2026-09-11 as version 1.0.1 (methodology v0.1): cite the tag or the DOI, never a
+  branch.
 title: "AI Service QoS: An Independent Outside-In Measurement Methodology, with Case Study 1 (Qwen3.8-Max / Qoder)"
 authors:
   - name: "2makeitwork"
@@ -15,16 +18,20 @@ authors:
     # affiliation is to be added here or in any listing, archive record or citation form
     # Do not attempt to resolve the handle to a person.
 type: dataset
-version: "1.0.0"    # matches the tag v1.0.0, the citable snapshot; scripts/preflight.sh --release <tag> and scripts/analyze.py both refuse if they differ
-date-released: "2026-09-11"   # the release date of version 1.0.0
-# doi: ""                 # dataset DOI, then paper-page DOI
+version: "1.0.1"    # matches the tag v1.0.1, the citable snapshot; scripts/preflight.sh --release <tag> and scripts/analyze.py both refuse if they differ
+date-released: "2026-09-11"   # the release date of this version
+doi: 10.5281/zenodo.22701430   # concept DOI — all archived versions, from Zenodo's GitHub integration
+# Version identifiers: v1.0.0 = 10.5281/zenodo.22701431 (and v1.0.1 gets its own on release).
+# Cite the concept identifier unless a specific archived version matters.
+# dataset-doi: pending (Zenodo record 22699009 is still a draft; publishing it mints this one)
 repository-code: "https://github.com/2makeitwork/paper_ai_Qos"
 repository-artifact: "https://huggingface.co/datasets/2makeitwork/paper_ai_Qos"
 license: >-
   CC-BY-4.0 (text, tables, figures and evidence data; see LICENSE-content.md);
   MIT (executable tooling under scripts/; see LICENSE-code.md)
 # A commit hash cannot be written into the commit it names, so the snapshot to cite is the
-# tag: v1.0.0. Zenodo's GitHub integration mints the version DOI from the release page.
+# tag: v1.0.1. Zenodo's GitHub integration archives each published release automatically and
+# mints the version identifier; the record above proves the hook fires.
 keywords:
   - AI service quality
   - large language model service measurement
@@ -38,29 +45,39 @@ preferred-citation:
   title: "AI Service QoS: An Independent Outside-In Measurement Methodology, with Case Study 1 (Qwen3.8-Max / Qoder)"
   authors:
     - name: "2makeitwork"
-  # year: 2026
-  # doi: ""
-  # url: "https://huggingface.co/papers/..."   # paper page once published
+  year: 2026
+  # doi: ""                 # the paper has no identifier of its own yet: no arXiv preprint is
+  # url: ""                 # registered, and a Hugging Face paper page is keyed to an arXiv id
   institution: "Independent"
-versions:
-  - date-released: "2026-09-11"
-    version: "1.0.0"
-    changes: "Formal release of methodology v0.1 with Case Study 1. The contribution is positioned
-      as a novelty of perspective rather than of method: the instruments are shared with prior
-      external measurement, while the vantage — the paying user's side, published as a stratified
-      public aggregate that checks a provider against its own quality-of-service claim without its
-      cooperation — is occupied by none of them. Section 7.1 states the institution this serves and
-      the two design duties not yet discharged."
-  - date-released: "2026-09-11"
-    version: "0.3.0-pre.4"
-    changes: "Pre-release line. Methodology v0.1 with Case Study 1: paper section 1.4 rebuilt as a
-      category table, the model-authenticity works recorded as considered-and-not-cited, the
-      capability-versus-delivery asymmetry stated in section 1.1, an unaffiliated byline, dated
-      pre-release notices, and a release gate (scripts/preflight.sh) that checks the published
-      artifact rather than the author's working copy"
-  - date-released: "2026-09-10"
-    version: "0.2.0"
-    changes: "Round 2 collection: evidence/incident_20260910/ (62 request episodes, per-request context occupancy, the compaction pair and three negative results)."
-  - date-released: "2026-09-09"
-    version: "0.1.0"
-    changes: "Round 1 frozen: evidence/ covering 2026-09-01 to 2026-09-09 (33 timeout events, all client code 80408; 18 quota or account events; phase and task-lifecycle extracts)."
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.22701430   # concept DOI — every archived version of this release family
+  - type: doi
+    value: 10.5281/zenodo.22701431   # version DOI of v1.0.0
+# Release history. A list is kept in comments because CITATION File Format 1.2 defines no `versions`
+# key (checked against the official schema on 2026-09-11: the allowed top-level keys are abstract,
+# authors, cff-version, commit, contact, date-released, doi, identifiers, keywords, license,
+# license-url, message, preferred-citation, references, repository, repository-artifact,
+# repository-code, title, type, url, version) and `additionalProperties: false` makes an invented key
+# a validation error. scripts/analyze.py now refuses any top-level key outside that list.
+#
+#   1.0.1  2026-09-11  Front page reordered: the paper is presented as the contribution and the
+#                      case report, evidence and tooling as the means it serves. Adds the archive
+#                      identifiers above. No evidence, no definition and no figure changed.
+#   1.0.0  2026-09-11  Formal release of methodology v0.1 with Case Study 1. Positions the
+#                      contribution as a novelty of perspective rather than of method: the
+#                      instruments are shared with prior external measurement, while the vantage —
+#                      the paying user's side, published as a stratified public aggregate that
+#                      checks a provider against its own quality-of-service claim without its
+#                      cooperation — is occupied by none of them. Section 7.1 states the
+#                      institution this serves and the two design duties not yet discharged.
+#   0.3.0-pre.4  2026-09-11  Pre-release line: section 1.4 rebuilt as a category table, the
+#                      model-authenticity works recorded as considered-and-not-cited, the
+#                      capability-versus-delivery asymmetry in section 1.1, an unaffiliated byline,
+#                      dated notices, and a release gate that checks the published artifact rather
+#                      than the author's working copy.
+#   0.2.0    2026-09-10  Round 2 collection: evidence/incident_20260910/ (62 request episodes,
+#                      per-request context occupancy, the compaction pair, three negative results).
+#   0.1.0    2026-09-09  Round 1 frozen: evidence/ covering 2026-09-01 to 2026-09-09 (33 timeout
+#                      events, all client code 80408; 18 quota or account events; phase and
+#                      task-lifecycle extracts).
