@@ -256,5 +256,5 @@ work's own identifier given there.
 ## License
 
 Text, tables, figures and data: **Creative Commons Attribution 4.0**
-(`LICENSE-content.md`). The scripts that regenerate this bundle: **MIT**
-(`LICENSE-code.md`).
+(`LICENSE-content.md`). The scripts published alongside it, which re-derive and assert
+every number in this card: **MIT** (`LICENSE-code.md`).

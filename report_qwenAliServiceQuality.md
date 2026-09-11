@@ -118,8 +118,9 @@ normally.
 ## 3. Method
 
 Anchors, all verified against the installed client (file-by-file provenance in
-`methodology.md`; regenerate with `scripts/collect_evidence.sh` then
-`scripts/anonymize.py`):
+`methodology.md`, which also states what re-runs from what — the extracts below are a
+frozen record of the study window, re-derived from `evidence/` rather than rebuilt
+from the provider):
 
 - **Timeout events**: `[ChatSessionService] Creating tool_call …
   {"title":"resume","rawInput":{"chatTask":"CONTINUE_TASK","reasonForCode":80408}}`

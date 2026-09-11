@@ -15,7 +15,7 @@ authors:
     # affiliation is to be added here or in any listing, archive record or citation form
     # Do not attempt to resolve the handle to a person.
 type: dataset
-version: "0.3.0-pre"      # matches the tag v0.3.0-pre; pre-release, definitions may still move
+version: "0.3.0-pre.2"    # matches the tag v0.3.0-pre.2; pre-release, definitions may still move
 date-released: "2026-09-11"   # last revision of the document set, not a release date
 # doi: ""                 # dataset DOI, then paper-page DOI
 repository-code: "https://github.com/2makeitwork/paper_ai_Qos"
@@ -24,7 +24,7 @@ license: >-
   CC-BY-4.0 (text, tables, figures and evidence data; see LICENSE-content.md);
   MIT (executable tooling under scripts/; see LICENSE-code.md)
 # A commit hash cannot be written into the commit it names, so the snapshot to cite is the
-# tag: v0.3.0-pre. Zenodo's GitHub integration mints the version DOI from the release page.
+# tag: v0.3.0-pre.2. Zenodo's GitHub integration mints the version DOI from the release page.
 keywords:
   - AI service quality
   - large language model service measurement

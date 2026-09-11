@@ -49,7 +49,7 @@
 - operator hold: banners 32 resumed, median 30 s, total 90.5 min; permission dialogs 37, median 88 s, total 122.0 min
 
 
-Generated 2026-09-11 08:30 — rerun: `python3 scripts/analyze.py`
+Content hash `sha256:6a16beb73b6fac37aff545327c0ebdad0532251dab3e1efe557f2aff5327ac70` - generated 2026-09-11 09:18:10 - rerun: `python3 scripts/analyze.py`
 
 
 ## Request lifecycle (frozen log snapshot; scripts/latency_from_logs.py)

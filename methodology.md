@@ -19,6 +19,29 @@ Qoder CN installation ──scripts/collect_evidence.sh──▶ scripts/raw_loc
                           └── asserts every number quoted in the report
 ```
 
+## What re-runs, and from what
+
+A claim about reproducibility is worth only as much as the attempt that tested it. Measured on
+2026-09-11, against the pinned snapshot `raw_snapshots/20260909T183241/` (461 files, `SHA256SUMS`
+manifest beginning `4d3c3b5758396e42`; the snapshot is not published because it carries local paths
+and real conversation identifiers):
+
+| Step | Command | Result of the attempt |
+|---|---|---|
+| Derived statistics from the published evidence | `python3 scripts/analyze.py` | **reproduces exactly.** 55 assertions pass, and the output file now carries a content hash so a rebuild is recognisable as identical regardless of when it ran |
+| Card against files | `python3 scripts/verify_dataset_card.py` | **reproduces exactly**, eight checks, in either repository |
+| Log extracts from the pinned snapshot | `LOGSRC=<snapshot>/logs scripts/collect_evidence.sh` then `scripts/anonymize.py` | **does not reproduce the frozen bundle.** Of 24 published items, 4 matched byte for byte, 11 differed, and 9 were not produced at all (`evidence/screenshots/`, `evidence/user_statements.md`, four extracts, two statistics files, the round-2 directory) |
+
+The reasons are concrete rather than mysterious: the error-code dictionary and the model registry
+are **fetched live** from the client and the service, so they are point-in-time observations that
+can move under the pipeline; the screenshot and the operator statements were never derived from
+logs; and several extracts were added to the collector after the freeze, against the mirror rather
+than against this snapshot. So the honest framing, used throughout this project: **`evidence/` is
+the frozen observation, and everything downstream of it is reproducible.** A reader who wants to
+check a number re-derives it from `evidence/`; a reader who wants to re-derive `evidence/` itself
+needs the author's unpublished raw tree *and* the study window still being served by the provider,
+which no snapshot can guarantee.
+
 ## Log anchors (how each event class is detected)
 
 | Event class | Anchor in `~/.config/QoderCN/logs/**/*.log` | Notes |
@@ -49,10 +72,11 @@ filtered out at collection and again at anonymization.
 
 | Round | Span | Published where | Conversation labels |
 |---|---|---|---|
-| 1 | 2026-09-01 → 2026-09-09 | `evidence/` (frozen. `anonymize.py` reproduces it from a **pinned** raw dump, not from a live one: run over the current `raw_evidence/` on 2026-09-11 it produced 22 files of which 4 differed — later sample lines and timestamps — and the two round-2 artifacts were absent, which is why the bundle is frozen and why round 2 is a separate directory) | `sess-01` … `sess-20`, numbered by row order in `stats/session_size_stats.csv` |
+| 1 | 2026-09-01 → 2026-09-09 | `evidence/` — a **frozen record of observations**, not a build artifact: see "What re-runs, and from what" below | `sess-01` … `sess-20`, numbered by row order in `stats/session_size_stats.csv` |
 | 2 | 2026-09-10 | `evidence/incident_20260910/` | `S1`, `S2`, … assigned by first request in that CSV alone |
+| 3 | 2026-09-11 → ongoing | **not published.** The same instruments keep collecting while the work is unobserved; whether it becomes a second dataset is an open decision, and if taken it will be a separate directory with its own pseudonym namespace, published as a new dataset configuration rather than an edit to the frozen one | `S1…` numbering restarts in its own directory, as round 2's does |
 
-The two namespaces are deliberately **not** interchangeable and no cross-reference
+The namespaces are deliberately **not** interchangeable and no cross-reference
 is published, because either one would leak the mapping to real conversation
 identifiers. Round 2 exists as a separate directory rather than an extension of
 round 1 because `anonymize.py` numbers pseudonyms in first-appearance order: any

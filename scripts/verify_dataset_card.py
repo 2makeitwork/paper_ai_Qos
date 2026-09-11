@@ -13,9 +13,16 @@ no card, so every claim it makes in machine-readable form is checked here:
   5. the sections the Hugging Face dataset-card evaluation looks for are present;
   6. the license is declared under a key the hub actually reads, and agrees with
      `CITATION.cff` and the root `LICENSE` notice (this repository is dual-licensed
-     by path: Creative Commons Attribution 4.0 for text and data, MIT for `scripts/`).
+     by path: Creative Commons Attribution 4.0 for text and data, MIT for `scripts/`);
+  7. the card carries no internal instruction text — no "paste this file" note, no
+     pointer to a file that is deliberately not published (both once shipped, in the
+     YAML comment block, where the hub renders nothing but the raw file shows all);
+  8. every `python3 <script>` command inside a fenced block names a script that exists
+     in whichever repository the card is published into, or the block says the command
+     belongs to the other one — an instruction a reader cannot run is a defect in the
+     publication, not in the reader.
 
-Exit code 0 = all six hold. Run it before `hf upload`.
+Exit code 0 = all eight hold. Run it before `hf upload`.
 
     python3 scripts/verify_dataset_card.py
 """
@@ -24,10 +31,24 @@ from __future__ import annotations
 import csv
 import io
 import re
+import subprocess
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def _tracked() -> set[str] | None:
+    """The paths git tracks in this checkout, or None when it is not a repository."""
+    try:
+        run = subprocess.run(["git", "-C", str(ROOT), "ls-files"],
+                             capture_output=True, text=True, timeout=30)
+    except (OSError, subprocess.SubprocessError):
+        return None
+    return set(run.stdout.split()) if run.returncode == 0 else None
+
+
+GIT_TRACKED = _tracked()
 # The card is DATASET_CARD.md in the source repository and README.md once it is
 # published into the dataset repository; either is accepted.
 CARD = next((p for p in (ROOT / "DATASET_CARD.md", ROOT / "README.md") if p.exists()),
@@ -95,6 +116,59 @@ def check_licenses(yaml_text: str) -> None:
         fails.append("root LICENSE does not state which paths are MIT and which are CC-BY-4.0")
 
 
+INTERNAL_MARKERS = ("Paste this file", "How to publish", "how to publish",
+                    "PUBLICATION.md", "prior-works.md", "reposition.md", "methodology_guidance")
+# A fenced command is an instruction the reader will try. Every script it names must be
+# present in whichever repository this card is published into, or the line has to say who it
+# belongs to - which is how the tools/ gate and the paste-in note escaped into the open.
+CMD_RE = re.compile(r"^\s*python3\s+([A-Za-z0-9_./-]+\.py)")
+
+
+def check_no_internal_instructions(text: str) -> list[str]:
+    hits = []
+    for marker in INTERNAL_MARKERS:
+        for n, line in enumerate(text.splitlines(), 1):
+            if marker in line:
+                hits.append(f"line {n}: internal instruction marker {marker!r} in the published card")
+    return hits
+
+
+def tracked_or_present(rel: str) -> bool:
+    """Does this path belong to the *published* set?
+
+    Testing the disk is not enough - `tools/` sits on this workstation and is deliberately
+    never published, which is precisely how an unrunnable instruction survived review. Where
+    the checkout is a git repository, ask git what is tracked; otherwise (the published data
+    layer has no git) fall back to file presence.
+    """
+    if GIT_TRACKED is not None:
+        return rel in GIT_TRACKED
+    return (ROOT / rel).exists()
+
+
+def check_commands_run(text: str) -> list[str]:
+    blocks, inside, buf = [], False, []
+    for line in text.splitlines():
+        if line.startswith("```"):
+            if inside:
+                blocks.append(buf)
+            inside, buf = not inside, []
+            continue
+        if inside:
+            buf.append(line)
+    problems = []
+    for block in blocks:
+        for line in block:
+            m = CMD_RE.match(line)
+            if not m:
+                continue
+            target = m.group(1)
+            if not tracked_or_present(target) and "not published" not in "\n".join(block):
+                problems.append(f"command names {m.group(1)!r}, which is not in this repository "
+                                f"and is not marked as belonging to the other one")
+    return problems
+
+
 def main() -> int:
     if not CARD.exists():
         print(f"FAIL no {CARD.name} at {CARD}", file=sys.stderr)
@@ -135,6 +209,9 @@ def main() -> int:
     for sec in REQUIRED_SECTIONS:
         if sec not in body:
             fails.append(f"missing card section: {sec}")
+
+    fails.extend(check_no_internal_instructions(text))
+    fails.extend(check_commands_run(body))
 
     print(f"verify_dataset_card: {len(configs)} configs declared")
     for name in sorted(measured):
