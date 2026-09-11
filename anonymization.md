@@ -1,10 +1,13 @@
 # Anonymization policy
 
-> **Pre-release, last revised 2026-09-11** (methodology v0.1). Definitions, wording and figures
-> may still change; cite a snapshot — a release tag or a commit, not a branch — so that a later
-> revision cannot move what your citation points at. Every figure quoted in this document set is
-> asserted against the shipped evidence by `scripts/analyze.py`, which fails when a number and the
-> evidence disagree and warns when a file is edited after the date above.
+> **Released 2026-09-11 as v1.0.0** (methodology v0.1). This snapshot is frozen: later
+> corrections and additions ship as a new version with a new tag, never as an edit to the bytes a
+> citation points at — cite the tag or the Digital Object Identifier, not a branch. Two version
+> numbers mean two different things here: the tag names this public snapshot, while *methodology
+> v0.1* names the definitions, which stay unchanged until a second provider has been measured
+> (section 7). Every figure quoted in this document set is asserted against the shipped evidence by
+> `scripts/analyze.py`, which fails when a number and the evidence disagree and warns when a file
+> is edited after the date above.
 
 Everything under `evidence/` is produced by `scripts/anonymize.py`, which
 builds a deterministic pseudonym map from the raw dump and refuses to finish

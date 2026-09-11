@@ -43,11 +43,14 @@ configs:
 
 # AI Service QoS — field evidence
 
-> **Pre-release, last revised 2026-09-11** (methodology v0.1). Definitions, wording and figures
-> may still change; cite a snapshot — a release tag or a commit, not a branch — so that a later
-> revision cannot move what your citation points at. Every figure quoted in this document set is
-> asserted against the shipped evidence by `scripts/analyze.py`, which fails when a number and the
-> evidence disagree and warns when a file is edited after the date above.
+> **Released 2026-09-11 as v1.0.0** (methodology v0.1). This snapshot is frozen: later
+> corrections and additions ship as a new version with a new tag, never as an edit to the bytes a
+> citation points at — cite the tag or the Digital Object Identifier, not a branch. Two version
+> numbers mean two different things here: the tag names this public snapshot, while *methodology
+> v0.1* names the definitions, which stay unchanged until a second provider has been measured
+> (section 7). Every figure quoted in this document set is asserted against the shipped evidence by
+> `scripts/analyze.py`, which fails when a number and the evidence disagree and warns when a file
+> is edited after the date above.
 
 **AI Service QoS — Independent Measurement of What Users Actually Receive** — methodology v0.1, and the first data product of an independent, outside-in measurement framework. The system measured here is **Case Study 1**, not the subject: the framework claims provider neutrality and one provider is not proof of it — a second provider measured with *these same definitions and no new ones* is the test (paper section 7, Stage 3).
 
@@ -83,7 +86,7 @@ recomputed from these files rather than taken on trust.
 The whole published repository was downloaded back into an empty directory and compared file by
 file with the tag it was built from — which is exactly what `scripts/check_release_sync.py` does,
 so this is re-checkable by a reader rather than autobiographical. Measured 2026-09-11 against tag
-`v0.3.0-pre.4`: **every data-layer file agrees byte for byte**, `README.md` included — that file
+`v1.0.0`: **every data-layer file agrees byte for byte**, `README.md` included — that file
 is this card with its three internal-instruction lines removed, and the source repository's own
 `README.md` is a different document, its homepage. The hub holds one file no tag contains: the
 `.gitattributes` it created with the repository. The generated table ends with a line carrying a
@@ -200,11 +203,10 @@ The first two run offline and exit 0 in either repository — the source reposit
 data layer — against the files shipped here. The third reaches the hub (and Zenodo, given a
 record identifier) and is the release-time check that the copy you are reading is byte-for-byte
 the copy in the other places: it reports drift rather than asserting agreement, because the
-three locations are updated by different commands and nothing synchronises them. The self-audit
-of the anonymiser itself (`scripts/anonymize.py --input raw_evidence`) needs the raw logs, which
-are not published, and the document gate over links, personal data and ignore rules (`tools/`) is
-local-only tooling that is deliberately not part of either repository: the commands above are what
-a reader can actually run, so they are what this card asks a reader to run.
+three locations are updated by different commands and nothing synchronises them. Anything not
+listed above is author-side tooling, or needs material deliberately not published here — the raw
+client logs, which carry local paths and real conversation identifiers. The commands above are
+what a reader can actually run, so they are what this card asks a reader to run.
 
 Pseudonyms (`sess-NN` in round 1, `S1`… in round 2) are numbered by the data's own
 order; the mapping to real conversation identifiers is not published and cannot be

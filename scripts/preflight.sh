@@ -36,15 +36,23 @@ step() {   # step <label> <command...>
 }
 note() { printf '  NOTE  %s\n' "$1"; }
 warn() { printf '  WARN  %s\n' "$1"; }
+skip() { printf '  SKIP  %s\n' "$1"; SKIP=$((SKIP+1)); }
 
 echo "=== 1. the published documents and their claims ==="
 step "every figure re-derives from evidence/ and the assertions pass" python3 scripts/analyze.py
 step "the dataset card tells the truth about the files it declares" python3 scripts/verify_dataset_card.py
-step "no uncommitted change anywhere (the gates read the working tree)" bash -c '
-  test -z "$(git status --porcelain)" || { echo "uncommitted: $(git status --porcelain | head -3)"; exit 1; }'
+step "working tree is clean (the author's step is to commit - an agent must not act on this)" bash -c '
+  test -z "$(git status --porcelain)" || { echo "uncommitted, so a green run describes a tree that no longer exists: $(git status --porcelain | head -3)"; exit 1; }'
 
 echo "=== 2. what a reader would actually receive ==="
-step "links resolve, no personal data, ignore rules in place" python3 tools/verify_docs.py
+if [[ -f tools/verify_docs.py ]]; then
+  step "links resolve, no personal data, ignore rules in place" python3 tools/verify_docs.py
+else
+  # tools/ is the author's local-only document gate; it is deliberately not published. Absent, it
+  # is a skip, not a failure: a stranger who clones this repository and runs the gate must not end
+  # with a red light caused by tooling that was never given to them.
+  skip "links/personal-data/ignore gate needs tools/verify_docs.py, which is local-only (see AGENTS.md)"
+fi
 step "no private file is reachable from the tracked set"      bash -c '
   hit=$(git ls-files | grep -E "PUBLICATION\.md|prior-works\.md|methodology_guidance|NESTING_WORKFLOW|__pycache__|raw_evidence|logs_mirror|raw_snapshots" || true)
   test -z "$hit" || { echo "tracked but should not be published: $hit"; exit 1; }'
@@ -89,14 +97,19 @@ if found != sys.argv[1]:
     warn "$REF is $behind commit(s) behind main; the release note, the builder or a gate may"
     warn "not be in the tree the tag names. Tag again if that matters, or accept the older text."
   fi
-  if git diff --quiet "$REF" -- evidence analysis CITATION.cff LICENSE LICENSE-code.md \
-       LICENSE-content.md methodology.md anonymization.md README.md DATASET_CARD.md scripts 2>/dev/null; then
-    note "no payload or document file differs between $REF and main"
+  # The files a reader actually receives: the data-layer payload plus the source-repository
+  # documents published alongside it. Named rather than given as `scripts`, because most of
+  # scripts/ is collector tooling that exists only on GitHub — editing this release gate should
+  # not read as though the release were missing something a reader needs.
+  PUBLISHED_PATHS="evidence analysis CITATION.cff LICENSE LICENSE-code.md LICENSE-content.md
+    methodology.md anonymization.md README.md DATASET_CARD.md RELEASE_NOTES.md
+    scripts/analyze.py scripts/verify_dataset_card.py scripts/check_release_sync.py
+    scripts/build_data_layer.py"
+  if git diff --quiet "$REF" -- $PUBLISHED_PATHS 2>/dev/null; then
+    note "no published file differs between $REF and main"
   else
     warn "these files differ between $REF and main, so the published copies must be rebuilt from $REF:"
-    git diff --name-only "$REF" -- evidence analysis CITATION.cff LICENSE LICENSE-code.md \
-       LICENSE-content.md methodology.md anonymization.md README.md DATASET_CARD.md scripts \
-      | sed 's/^/          /'
+    git diff --name-only "$REF" -- $PUBLISHED_PATHS | sed 's/^/          /'
   fi
   if command -v hf >/dev/null 2>&1 || [[ -x "$HOME/.local/bin/hf" ]]; then
     step "the served dataset repository is byte-identical to $REF" \
@@ -119,18 +132,54 @@ if [[ $FAIL -gt 0 ]]; then
 fi
 echo "READY — $PASS checks passed, and nothing was written, uploaded or published."
 if [[ -n "$REF" ]]; then
-  cat <<'ORDER'
-
-Then by hand, in this order — each step is public or irreversible, so none is automated:
-
-  1. Zenodo, your account, Applications -> GitHub: enable 2makeitwork/paper_ai_Qos.
-     Do this FIRST: a release published while the integration is off is never archived.
-  2. GitHub: publish the draft release for the tag (gh release edit <tag> --draft=false
-     --notes-file RELEASE_NOTES.md). Publishing it is what mints the software version DOI.
-  3. Zenodo: publish the record 22699009 (edit page https://zenodo.org/deposit/22699009).
-     A published record can be corrected but never deleted. Write the DOI into CITATION.cff,
-     the dataset card and README afterwards, and re-run this script.
-  4. Revoke the access token you pasted into the chat, once it is no longer in use.
-ORDER
+  # Measured, not recited. This list used to assert "publish the draft release" after the release
+  # had been published, and "enable the integration first" after it was too late for that version:
+  # instructions that contradict the world are worse than none, so each line is conditional on what
+  # the APIs say right now.
+  hooks="?"; rel="absent"
+  if command -v gh >/dev/null 2>&1; then
+    hooks="$(gh api repos/2makeitwork/paper_ai_Qos/hooks --jq 'length' 2>/dev/null || echo '?')"
+    rel="$(gh release view "$REF" --json isDraft --jq 'if .isDraft then "draft" else "published" end' 2>/dev/null || echo absent)"
+  fi
+  n=1
+  # The acts below name that account's archive record, release and token. Printed into a fork's
+  # terminal they would instruct a stranger to publish someone else's submission, so they appear
+  # only when this checkout really is the project's own repository.
+  origin="$(git remote get-url origin 2>/dev/null || true)"
+  if [[ "$origin" != *"2makeitwork/paper_ai_Qos"* ]]; then
+    echo
+    echo "  (the remaining acts are for whoever maintains 2makeitwork/paper_ai_Qos — they name"
+    echo "   that account's archive record, release and access token. This checkout's origin is"
+    echo "   elsewhere, so they do not apply; what a fork owns is its own tags and records.)"
+    exit 0
+  fi
+  echo
+  echo "Remaining acts, in order — each is public or irreversible, so none is automated:"
+  if [[ "$hooks" == "0" ]]; then
+    echo "  $n. No Zenodo webhook exists on this repository (measured just now), so the integration"
+    echo "     is not installed: your account -> Applications -> GitHub -> authorize -> switch this"
+    echo "     repository On, which is what creates the hook."
+    if [[ "$rel" == "published" ]]; then
+      echo "     $REF is already published, so enabling now cannot archive this version - a manual"
+      echo "     deposit is the remaining way to a software identifier for it (zenodo/README.md)."
+    fi
+    n=$((n+1))
+  elif [[ "$hooks" == "?" ]]; then
+    echo "  $n. gh is unavailable here: whether the Zenodo webhook exists could not be measured."
+    n=$((n+1))
+  fi
+  if [[ "$rel" != "published" ]]; then
+    echo "  $n. GitHub: publish the release for $REF (gh release edit $REF --draft=false"
+    echo "     --notes-file RELEASE_NOTES.md) — that event is what the integration would archive."
+    n=$((n+1))
+  fi
+  if ! grep -q '^doi:' CITATION.cff; then
+    echo "  $n. Zenodo: publish record 22699009 (https://zenodo.org/deposit/22699009). Correctable"
+    echo "     afterwards, never deletable. Then write the DOI into CITATION.cff, the dataset card"
+    echo "     and README, and re-run this script."
+    n=$((n+1))
+  fi
+  [[ -n "${ZENODO_TOKEN:-}" ]] && echo "  $n. Revoke the Zenodo access token in use: it was typed into a chat transcript."
+  exit 0
 fi
 exit 0

@@ -24,6 +24,13 @@ by `python3 scripts/analyze.py`, which fails the build when a number and the evi
 disagree; `python3 scripts/verify_dataset_card.py` checks the card against the files it
 declares. Both run in either repository and need nothing beyond the files themselves.
 
-**Pre-release.** Definitions, wording and figures may still move; cite this tag rather than a
-branch. Author: 2makeitwork — independent, unaffiliated. Text, tables, figures and data under
-Creative Commons Attribution 4.0; executable tooling under `scripts/` under the MIT license.
+**Version 1.0.0, released 2026-09-11.** The contribution is a novelty of **perspective, not of
+method**: the instruments are shared with prior external measurement of model services, while the
+vantage is not — a reading taken on the paying user's side, published as a stratified public
+aggregate, which checks what a provider delivered rather than ranks what a system computes.
+Section 7.1 of the paper states the institution this is meant to serve and the two design duties
+left open. Two version numbers mean two things: this tag names the public snapshot, while
+*methodology v0.1* names the definitions, which stay unchanged until a second provider has been
+measured. Cite the tag, not a branch. Author: 2makeitwork — independent, unaffiliated. Text,
+tables, figures and data under Creative Commons Attribution 4.0; executable tooling under
+`scripts/` under the MIT license.

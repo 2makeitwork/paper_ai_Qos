@@ -13,6 +13,7 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+import subprocess
 import sys
 from collections import Counter, defaultdict
 from datetime import datetime
@@ -302,24 +303,33 @@ else:
     print("  SKIP no drift check: the paper and the case report are not in this "
           "checkout (data-layer repository)")
 
-# ---- pre-release notice: present, and carrying the same revision date, everywhere ----
+# ---- release notice: one text, one version, present everywhere ----
 NOTICE_DATE = "2026-09-11"
+RELEASED = "1.0.0"        # the released version; CITATION.cff must carry this same string
+NOTICE_MARK = f"**Released {NOTICE_DATE} as v{RELEASED}**"
 PUB_DOCS = [doc for doc in (EV.parent / n for n in
             ("paper_ai_QoS.md", "report_qwenAliServiceQuality.md", "README.md", "abstract.md",
              "methodology.md", "anonymization.md", "ask_vendor.md", "DATA_REQUEST.md",
              "DATASET_CARD.md", "zenodo/README.md")) if doc.exists()]
 notice_problems = [doc.name for doc in PUB_DOCS
-                   if f"**Pre-release, last revised {NOTICE_DATE}**" not in doc.read_text(errors="replace")]
+                   if NOTICE_MARK not in doc.read_text(errors="replace")]
 if PUB_DOCS:
-    check("pre-release notice present and dated " + NOTICE_DATE + " in every published document",
+    check(f"release notice {NOTICE_MARK} present in every published document",
           notice_problems, [])
+    # The version lives in two places, so one is checked against the other: a notice that names a
+    # version CITATION.cff does not would send a citation to a snapshot that is not this one.
+    cff = EV.parent / "CITATION.cff"
+    cff_found = re.search(r'^version: "([^"]+)"', cff.read_text(errors="replace"), re.M) if cff.exists() else None
+    if cff.exists():
+        check("CITATION.cff and the release notices carry the same version",
+              cff_found.group(1) if cff_found else "unreadable", RELEASED)
     late = [doc.name for doc in PUB_DOCS
             if datetime.fromtimestamp(doc.stat().st_mtime).date() > datetime.strptime(NOTICE_DATE, "%Y-%m-%d").date()]
     if late:
-        print("  ADVISORY: edited after the stated revision date — bump NOTICE_DATE and the "
-              "notices together: " + ", ".join(sorted(late)))
+        print("  ADVISORY: edited after the release date — a released snapshot is frozen, so "
+              "these edits belong in the next version: " + ", ".join(sorted(late)))
 else:
-    print("  SKIP pre-release notice check: no published documents in this checkout (data layer)")
+    print("  SKIP release notice check: no published documents in this checkout (data layer)")
 
 # ---- authorship: one handle, no institution, anywhere in the public set ----
 BYLINE = "independent, unaffiliated"
@@ -395,6 +405,80 @@ for doc in PUB_DOCS:
 if PUB_DOCS:
     check("no published document quotes a check or figure count unless its section dates the measurement",
           count_problems, [])
+
+# ---- a published heading must not route text to a venue ----
+# The released v1.0.0 tag carried "## One-line entry (repository subtitle, listing, tweet)" and
+# "## Short entry (about 300 characters: post summary field, search result, card lead)" in
+# abstract.md: notes for whoever posts the text, sitting in a file a stranger downloads. Venue
+# routing in a heading is the signature, so the heading is what is checked - prose may name a
+# medium freely.
+VENUE_WORDS = ("subtitle", "listing", "tweet", "summary field", "post summary", "search result",
+               "card lead", "post body", "collection note", "use everywhere", "use verbatim",
+               "for listings", "to paste", "paste this", "headline to use")
+editorial_problems = []
+for doc in PUB_DOCS:
+    for n, line in enumerate(doc.read_text(errors="replace").splitlines(), 1):
+        low = line.lower()
+        if line.startswith("#") and "(" in line and any(w in low for w in VENUE_WORDS):
+            editorial_problems.append(f"{doc.name}:{n}: heading routes text to a venue: "
+                                      f"{line.strip()[:64]}")
+if PUB_DOCS:
+    check("no published heading carries editorial routing instructions", editorial_problems, [])
+
+# ---- a published script may only tell someone to run something that exists ----
+# scripts/preflight.sh invoked `python3 tools/verify_docs.py` unconditionally. tools/ is local-only,
+# so a clean clone of the release tag finished with NOT READY TO PUBLISH — a red light caused by
+# tooling nobody published. Same defect as the dataset card's un-runnable command, one layer down,
+# which is why this checks scripts too and asks git rather than the disk: the author's disk has
+# everything, so presence proves nothing about what was shipped.
+CALL_RE = re.compile(r"(?:python3|bash)\s+((?:scripts|tools|zenodo|analysis)/[\w./-]+)")
+
+
+def tracked_at_root() -> set[str] | None:
+    """What git tracks, but only when this checkout is the top level of its own repository."""
+    root = EV.parent
+    try:
+        prefix = subprocess.run(["git", "-C", str(root), "rev-parse", "--show-prefix"],
+                                capture_output=True, text=True, timeout=30)
+        if prefix.returncode != 0 or prefix.stdout.strip():
+            return None
+        listing = subprocess.run(["git", "-C", str(root), "ls-files"],
+                                 capture_output=True, text=True, timeout=30)
+    except (OSError, subprocess.SubprocessError):
+        return None
+    return set(listing.stdout.split()) if listing.returncode == 0 else None
+
+
+TRACKED = tracked_at_root()
+LOCAL_WORDS = ("local-only", "not published", "not in this repository", "never published")
+script_problems = []
+scripts_dir = EV.parent / "scripts"
+if scripts_dir.is_dir():
+    # Iterate what is *published*, not what is on this disk: the first version of this check walked
+    # scripts/ and reported an untracked local helper that no reader has, which is precisely the
+    # mistake the check exists to catch.
+    if TRACKED is not None:
+        candidates = sorted(EV.parent / rel for rel in TRACKED
+                            if rel.startswith(("scripts/", "zenodo/"))
+                            and rel.endswith((".sh", ".py")))
+    else:
+        candidates = sorted(list(scripts_dir.glob("*.sh")) + list(scripts_dir.glob("*.py"))
+                            + list((EV.parent / "zenodo").glob("*.sh")))
+    for script in candidates:
+        if not script.is_file() or script.name == "analyze.py":
+            continue                      # this file's own strings are not instructions
+        lines = script.read_text(errors="replace").splitlines()
+        for n, line in enumerate(lines, 1):
+            for found in CALL_RE.finditer(line):
+                target = found.group(1)
+                shipped = (target in TRACKED) if TRACKED is not None else (EV.parent / target).exists()
+                window = " ".join(lines[max(0, n - 4):n + 3]).lower()
+                if not shipped and not any(w in window for w in LOCAL_WORDS):
+                    script_problems.append(f"{script.name}:{n} runs {target}, which is not shipped "
+                                           f"and is not marked local-only here")
+if TRACKED is not None or scripts_dir.is_dir():
+    check("no published script tells a reader to run something that is not published",
+          script_problems, [])
 
 # ---- the release note describes the artifact, not the machinery that publishes it ----
 # A GitHub release body is reader-facing text. Workflow commentary in it - what we chose not

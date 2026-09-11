@@ -1,10 +1,13 @@
 # Zenodo deposition inputs
 
-> **Pre-release, last revised 2026-09-11** (methodology v0.1). Definitions, wording and figures
-> may still change; cite a snapshot — a release tag or a commit, not a branch — so that a later
-> revision cannot move what your citation points at. Every figure quoted in this document set is
-> asserted against the shipped evidence by `scripts/analyze.py`, which fails when a number and the
-> evidence disagree and warns when a file is edited after the date above.
+> **Released 2026-09-11 as v1.0.0** (methodology v0.1). This snapshot is frozen: later
+> corrections and additions ship as a new version with a new tag, never as an edit to the bytes a
+> citation points at — cite the tag or the Digital Object Identifier, not a branch. Two version
+> numbers mean two different things here: the tag names this public snapshot, while *methodology
+> v0.1* names the definitions, which stay unchanged until a second provider has been measured
+> (section 7). Every figure quoted in this document set is asserted against the shipped evidence by
+> `scripts/analyze.py`, which fails when a number and the evidence disagree and warns when a file
+> is edited after the date above.
 
 `deposit-dataset.json` is the metadata for the archival record of the **data layer**; `.zenodo.json` at
 the repository root is what Zenodo's GitHub integration reads when it turns a **release** into a software
@@ -16,9 +19,8 @@ record can never be deleted.
 **Release procedure, in the order that keeps the copies identical.** The data layer exists in three
 places that are written by three different commands, so the order matters:
 
-1. Edit, then run the gates (`scripts/analyze.py`, `scripts/verify_dataset_card.py`,
-   `python3 tools/verify_docs.py`) — or run `./scripts/preflight.sh`, which runs them in order and
-   prints `READY` or `NOT READY TO PUBLISH`. A verification run cannot dirty the tree: `analyze.py`
+1. Edit, then run the gates — `./scripts/preflight.sh` runs them in order and prints `READY` or
+   `NOT READY TO PUBLISH`. A verification run cannot dirty the tree: `analyze.py`
    rewrites `analysis/summary_tables.md` only when the content hash in its last line changes, so
    re-running on the same statistics leaves that file, and its timestamp, exactly where they were.
 2. Commit, push, tag.
@@ -38,20 +40,32 @@ places that are written by three different commands, so the order matters:
    author's account: a draft release is never archived, and a release published while the
    integration is off is not archived afterwards either.
 
+*Deviation, recorded 2026-09-11 for the first formal release.* `v1.0.0` was published as a GitHub
+release **before** the integration could be enabled, because the integration turned out to be
+unusable that day (see the table below) and holding the public release for it would have delayed
+the release itself. What that costs: no software record was created automatically for `v1.0.0`, and
+enabling the integration afterwards will not retroactively archive it. What it does not cost:
+nothing about the release is wrong or lost — the tag, the source archive and the dataset record all
+stand — and a version identifier for the software can still be minted by a manual deposit, at the
+price of not sharing a concept identifier with the releases the integration will handle later.
+For subsequent releases the rule above holds without exception: enable, verify the hook exists,
+then publish.
+
 Performed on 2026-09-11, in this order: tag `v0.3.0-pre` at commit `8f96c47`, with both published
 copies brought to it. Correcting an overstated reproducibility claim the same morning produced
 `v0.3.0-pre.2` at `c711118`; making the gates test the published tree instead of this workstation
-produced `v0.3.0-pre.3` at `b56c1b3`, and naming the citable snapshot produced `v0.3.0-pre.4` at
-`eef47c1` — **that is the tag to cite**. Superseded tags are left where they are rather than moved:
-rewriting a reference someone else may already have fetched costs more than an extra tag.
+produced `v0.3.0-pre.3` at `b56c1b3`; naming the citable snapshot produced `v0.3.0-pre.4` at
+`eef47c1`. The author then rewrote the positioning — the contribution as a novelty of perspective
+rather than of method, with section 7.1 added — and that text was packaged and published as the
+formal release **`v1.0.0` at commit `fd431d8`**, which is the tag to cite. Superseded tags are left
+where they are rather than moved: rewriting a reference someone else may already have fetched costs
+more than an extra tag. The superseded *draft releases* were deleted (their tags kept) so that
+exactly one release exists and the wrong one cannot be published.
 
-The draft record and the dataset repository both sit at `v0.3.0-pre.4` — 36 files, 751,475 bytes,
-zero findings against the tag and no internal instruction text in what is served, measured
-2026-09-11 by `scripts/check_release_sync.py --ref v0.3.0-pre.4 --zenodo-draft 22699009`, which
-reports `IN SYNC`. The GitHub release `v0.3.0-pre.4` exists as a **draft with no assets on
-purpose**, because a draft release is not archived and Zenodo's GitHub integration has to be
-enabled on the author's account before the release is published. The superseded `v0.3.0-pre.2`
-draft release was deleted, keeping its tag, so that exactly one release can be published.
+At `v1.0.0` the archive draft and the dataset repository are both byte-identical to the tag —
+36 files, 753,344 bytes, zero findings against the tag and no internal instruction text in what is
+served, measured 2026-09-11 by
+`scripts/check_release_sync.py --ref v1.0.0 --zenodo-draft 22699009`, which reports `IN SYNC`.
 
 **Authorship, decided 2026-09-11.** The creator is `2makeitwork` with an **empty affiliation**, and the
 record's `notes` field says so in words: the author is an independent, unaffiliated individual, and no
@@ -66,7 +80,7 @@ a draft revised today and published next week does not archive today's date.
 | Route | Record | Needs | Licence field |
 |---|---|---|---|
 | Manual deposit of the evidence | dataset, `deposit-dataset.json` | done: a token was supplied on 2026-09-11 (not stored in any file) and the draft exists; publishing is the remaining step | `cc-by-4.0` — verified against Zenodo's licence API, title "Creative Commons Attribution 4.0 International" |
-| GitHub integration | software, from a release | the repository enabled in Zenodo's GitHub settings **and a published GitHub release**: the tag `v0.3.0-pre` exists at commit `8f96c47` and `.zenodo.json` is committed at that tag, so only the release page and the integration toggle are missing — a draft release is not archived, and the release name becomes the record's version | `mit` — verified against the same API, title "MIT License", SPDX scheme, marked OSI-approved; note the archive also contains CC-BY-4.0 text and data, which one field cannot express |
+| GitHub integration | software, from a release | **blocked, measured 2026-09-11:** `GET /repos/2makeitwork/paper_ai_Qos/hooks` returns an empty list both before and after the `v1.0.0` release was published, so Zenodo never installed its webhook — which is also why the repository is absent from Zenodo's GitHub settings page and why GitHub lists the Zenodo application as authorized but "never used". Everything on the repository side is in order: public, `v1.0.0` published as a non-draft, non-prerelease release, `.zenodo.json` committed at the tag, licence `mit` verified against Zenodo's licence API | the fix is on the account: re-authorize Zenodo *from* Zenodo's Applications → GitHub page (the login grant alone carries no hook permission) and check GitHub's third-party application-access restrictions for the account. If it cannot be made to work, a manual deposit of the release source archive with `upload_type: software` still mints a version identifier — at the cost of a separate record family from the one the integration would create later |
 
 **How it is meant to be used, in this order**
 
