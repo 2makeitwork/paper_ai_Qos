@@ -51,7 +51,7 @@ else
   # tools/ is the author's local-only document gate; it is deliberately not published. Absent, it
   # is a skip, not a failure: a stranger who clones this repository and runs the gate must not end
   # with a red light caused by tooling that was never given to them.
-  skip "links/personal-data/ignore gate needs tools/verify_docs.py, which is local-only (see AGENTS.md)"
+  skip "links/personal-data/ignore gate needs tools/verify_docs.py, which is author-side tooling and is not published"
 fi
 step "no private file is reachable from the tracked set"      bash -c '
   hit=$(git ls-files | grep -E "PUBLICATION\.md|prior-works\.md|methodology_guidance|NESTING_WORKFLOW|__pycache__|raw_evidence|logs_mirror|raw_snapshots" || true)

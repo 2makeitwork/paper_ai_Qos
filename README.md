@@ -70,7 +70,6 @@ latency distribution instead of a complaint.
 | `ask_vendor.md` | the open questions addressed to the IDE vendor and the model service, each stated as measured-by-us, answer-unknown |
 | `DATASET_CARD.md` | the dataset card, published as `README.md` of [the dataset repository](https://huggingface.co/datasets/2makeitwork/paper_ai_Qos) |
 | `CITATION.cff` | machine-readable citation, with the archive identifiers |
-| `AGENTS.md` | who may commit, push, tag and publish, and what counts as reader-facing text — rules for humans and AI agents alike |
 | `RELEASE_NOTES.md` | the text of the GitHub release note, authored as a tracked file so it passes the same scans as everything else |
 | `LICENSE` | what is covered by which license: text and data under Creative Commons Attribution 4.0, `scripts/` under MIT |
 | `LICENSE-content.md` / `LICENSE-code.md` | Creative Commons Attribution 4.0 for text, tables, figures and data; MIT for the scripts |
@@ -81,8 +80,7 @@ latency distribution instead of a complaint.
 | `scripts/anonymize.py` | turns a raw dump into `evidence/`; exits nonzero if any forbidden pattern survives |
 | `scripts/analyze.py` | recomputes every number quoted in the report from `evidence/` alone and asserts them; regenerates `analysis/summary_tables.md` |
 | `scripts/latency_from_logs.py` | turns the client's phase-transition and context-occupancy log lines into a per-request lifecycle table (wait for first streamed chunk, turn total, send-to-stall, first-chunk-to-stall, timeout versus dialog park, tokens at send); `--since` scopes a collection round to its own incident |
-| `scripts/verify_dataset_card.py` | checks `DATASET_CARD.md` against the files it declares — config paths exist, tables are well-formed, stated row counts are true, required card sections present; run before any upload |
-| `scripts/preflight.sh` | runs every gate in this repository in one ordered pass — assertions, the card, document hygiene, tracked-set privacy, payload staging, commit identity, published history — and prints `READY` or `NOT READY TO PUBLISH`, naming what failed. With `--release <tag>` it adds the byte and text comparison of the published copies against that tag. It writes nothing, uploads nothing and publishes nothing |
+| `scripts/verify_dataset_card.py` | checks `DATASET_CARD.md` against the files it declares — config paths exist, tables are well-formed, stated row counts are true, required card sections present |
 | `scripts/check_release_sync.py` | compares the published data layer, file by file and hash by hash, across the working tree (or a tag), the Hugging Face dataset repository and a Zenodo record — the three update independently, so drift is the default state and this is how it is measured rather than assumed (`--ref <tag>`, `--zenodo <record>`, `--zenodo-draft <id>` with a token). It also scans the **served text** for maintainer instructions, because fixing a document locally is not the same as fixing what the hub hands out |
 | `scripts/build_data_layer.py` | stages exactly the files the data layer is defined to contain, from the working tree or a tag, and refuses to produce a partial or misplaced payload. One manifest (`PAYLOAD` in `check_release_sync.py`) feeds the upload, the archive deposit and the comparison, so the published set cannot be assembled three different ways |
 | `scripts/log_mirror.py` | append-only mirror of the live IDE logs, capturing each file as it rotates out and SHA-256-verifying committed regions to flag in-place tampering; run every minute by the user timer pair in `scripts/systemd/` (`qoder-log-mirror.timer` → `qoder-log-mirror.service scan --once`), and `snapshot` for a checksummed frozen tree. Its `logs_mirror/` output is not published |
@@ -107,9 +105,6 @@ version plus the service rather than the model alone.
 ```bash
 python3 scripts/analyze.py                  # re-derives and asserts every published figure
 python3 scripts/verify_dataset_card.py      # checks the card against the files it declares
-./scripts/preflight.sh                      # every gate in this repository, in one ordered pass:
-                                            # the two above plus document hygiene, tracked-set
-                                            # privacy, payload staging and commit identity
 python3 scripts/check_release_sync.py --ref <tag>    # optional, needs network: compares
                                             # the served dataset repository with the tag
 ```
