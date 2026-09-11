@@ -28,7 +28,7 @@ and real conversation identifiers):
 
 | Step | Command | Result of the attempt |
 |---|---|---|
-| Derived statistics from the published evidence | `python3 scripts/analyze.py` | **reproduces exactly.** 55 assertions pass, and the output file now carries a content hash so a rebuild is recognisable as identical regardless of when it ran |
+| Derived statistics from the published evidence | `python3 scripts/analyze.py` | **reproduces exactly.** 57 assertions pass. The output file ends with a content hash plus a second-precision timestamp, and when the hash is unchanged the file is not rewritten at all — so running the checks cannot dirty the tree, and two copies with the same hash hold the same statistics whatever their stamps say |
 | Card against files | `python3 scripts/verify_dataset_card.py` | **reproduces exactly**, eight checks, in either repository |
 | Log extracts from the pinned snapshot | `LOGSRC=<snapshot>/logs scripts/collect_evidence.sh` then `scripts/anonymize.py` | **does not reproduce the frozen bundle.** Of 24 published items, 4 matched byte for byte, 11 differed, and 9 were not produced at all (`evidence/screenshots/`, `evidence/user_statements.md`, four extracts, two statistics files, the round-2 directory) |
 

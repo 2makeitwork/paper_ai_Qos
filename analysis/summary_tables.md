@@ -49,9 +49,6 @@
 - operator hold: banners 32 resumed, median 30 s, total 90.5 min; permission dialogs 37, median 88 s, total 122.0 min
 
 
-Content hash `sha256:6a16beb73b6fac37aff545327c0ebdad0532251dab3e1efe557f2aff5327ac70` - generated 2026-09-11 09:56:09 - rerun: `python3 scripts/analyze.py`
-
-
 ## Request lifecycle (frozen log snapshot; scripts/latency_from_logs.py)
 
 - 308 requests across 10 sessions — S 211, T 71 (timeout 33 / dialog 38), F/U 26
@@ -66,3 +63,5 @@ Content hash `sha256:6a16beb73b6fac37aff545327c0ebdad0532251dab3e1efe557f2aff532
 - send-to-stall spanned 125s to 4861s (the upper value is a banner left parked for 81 minutes)
 - paired experiment: the same conversation stalled five times at 494,193 tokens, then after the client's context-compaction control reported 117,153 tokens (`Compression API call completed for session compact`) a request carrying 85,115 tokens completed in 10.1 s — report §9
 - three negative results from this round: tab visibility (a hidden conversation completed in 2.58 s), server-side cache residency across a 27.7-minute idle gap (17.11 s versus 17.58 s at the same size), and inflating an agent's context by asking it to read files (one such turn added 851 tokens)
+
+Content hash `sha256:2218b3e37e6e4307ff5b1451017d19d5f5c86ac217c803d160d0111a34f5ee77` - generated 2026-09-11 10:17:52 - rerun: `python3 scripts/analyze.py`

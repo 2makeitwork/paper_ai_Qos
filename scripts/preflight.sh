@@ -48,9 +48,16 @@ step "links resolve, no personal data, ignore rules in place" python3 tools/veri
 step "no private file is reachable from the tracked set"      bash -c '
   hit=$(git ls-files | grep -E "PUBLICATION\.md|prior-works\.md|reposition\.md|methodology_guidance|NESTING_WORKFLOW|__pycache__|raw_evidence|logs_mirror|raw_snapshots" || true)
   test -z "$hit" || { echo "tracked but should not be published: $hit"; exit 1; }'
-step "the data layer can be staged completely"                bash -c "
+step "the staged data layer stages completely AND passes its own scripts" bash -c "
   d=\"\$(mktemp -d)/payload\"; trap 'rm -rf \"\$(dirname \"\$d\")\"' EXIT
-  python3 scripts/build_data_layer.py --out \"\$d\" --ref '${REF:-HEAD}'"
+  python3 scripts/build_data_layer.py --out \"\$d\" --ref '${REF:-HEAD}'
+  # The card's commands are checked where the reader runs them. A pass in the source
+  # repository proves nothing about the published subset: 'tools/' and the unpublished
+  # log-side scripts all exist here, and that is how an un-runnable instruction reached
+  # the card twice.
+  cd \"\$d\" || exit 1
+  python3 scripts/verify_dataset_card.py >/dev/null || { echo 'card check fails inside the staged payload'; exit 1; }
+  python3 scripts/analyze.py >/dev/null || { echo 'assertions fail inside the staged payload'; exit 1; }"
 step "a release note exists and is not a work log"            bash -c 'test -s RELEASE_NOTES.md'
 
 echo "=== 3. identity and history (the metadata a file scan cannot see) ==="

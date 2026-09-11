@@ -24,9 +24,12 @@ OUT = Path(__file__).resolve().parents[1] / "analysis" / "summary_tables.md"
 
 TS = "%Y-%m-%d %H:%M:%S"
 fails: list[str] = []
+checks_done = 0        # how many checks this run performed, i.e. the number prose may quote
 
 
 def check(name: str, got, want) -> None:
+    global checks_done
+    checks_done += 1
     ok = got == want
     print(f"  {'PASS' if ok else 'FAIL'} {name}: {got}" + ("" if ok else f" (report says {want})"))
     if not ok:
@@ -353,6 +356,46 @@ if PUB_DOCS:
     check("no published document points a reader at a private file without saying so",
           private_problems, [])
 
+# ---- counts belong to the script's output, not to prose ----
+# scripts/analyze.py prints one line per check, so the total is whatever a run reports. Quoting
+# it in a document is a claim with a shelf life: the dataset card said "50", then "52", while the
+# script was already at 56, and no gate failed. A count is therefore allowed only where the
+# passage says it was measured and on which date - the same date the notices carry, so bumping
+# the revision date forces the counts to be re-measured rather than left behind.
+COUNT_RE = re.compile(r"\b(\d{2,3})\s+(?:assertions?\b|published figures?\b|checks\b)")
+DATE_RE = re.compile(r"measured|re-runs|attempt", re.I)
+
+
+def section_of(lines: list[str], at: int) -> str:
+    """The markdown section a line belongs to, by heading boundaries."""
+    start = 0
+    for i in range(at - 1, -1, -1):
+        if lines[i].startswith("#"):
+            start = i
+            break
+    end = len(lines)
+    for i in range(at, len(lines)):
+        if lines[i].startswith("#"):
+            end = i
+            break
+    return "\n".join(lines[start:end])
+
+
+count_problems = []
+for doc in PUB_DOCS:
+    body_lines = doc.read_text(errors="replace").splitlines()
+    for n, line in enumerate(body_lines, 1):
+        found = COUNT_RE.search(line)
+        if not found:
+            continue
+        section = section_of(body_lines, n - 1)
+        if NOTICE_DATE not in section or not DATE_RE.search(section):
+            count_problems.append(f"{doc.name}:{n}: {found.group(0)!r} quoted in a section that "
+                                  f"does not date the measurement (need {NOTICE_DATE} + 'measured')")
+if PUB_DOCS:
+    check("no published document quotes a check or figure count unless its section dates the measurement",
+          count_problems, [])
+
 # ---- the release note describes the artifact, not the machinery that publishes it ----
 # A GitHub release body is reader-facing text. Workflow commentary in it - what we chose not
 # to attach and why, which integration has to be enabled first - is addressed to the person
@@ -428,13 +471,10 @@ out += ["", "## Per-interaction phase timing (`[ACPProgressStateMachine]`)", "",
         f"{statistics_median(sorted(hold_banner)):.0f} s, total {sum(hold_banner) / 60:.1f} min; "
         f"permission dialogs {len(hold_perm)}, median "
         f"{statistics_median(sorted(hold_perm)):.0f} s, total {sum(hold_perm) / 60:.1f} min", ""]
-# The footer carries both: a content hash that machines compare and a second-precision
-# timestamp a person reads. The hash covers every line above it, so re-running the script
-# on unchanged evidence produces the same hash and a new time - scripts/check_release_sync.py
-# compares the hash and ignores the time, which keeps a rebuild from being reported as drift.
-content_sha = hashlib.sha256("\n".join(out).encode()).hexdigest()
-out += ["", f"Content hash `sha256:{content_sha}` - generated "
-          f"{datetime.now():%Y-%m-%d %H:%M:%S} - rerun: `python3 scripts/analyze.py`", ""]
+# The footer carries both: a content hash that machines compare, and a second-precision
+# timestamp a person reads. It is appended at the very end so the hash covers the whole
+# document; scripts/check_release_sync.py compares that hash and ignores the time, so a
+# rebuild with the same statistics is recognised as identical rather than reported as drift.
 out += ["", "## Request lifecycle (frozen log snapshot; scripts/latency_from_logs.py)", "",
         f"- {len(lc)} requests across {len({r[0] for r in lc})} sessions — S {len(_succ)}, T {len(_stall)} (timeout {len(_tto)} / dialog {len(_tdi)}), F/U {len(lc) - len(_succ) - len(_stall)}",
         f"- first-attempt usable (0-retry S) **{_fau}/{len(_succ)} ({100*_fau//len(_succ)}%)**",
@@ -460,8 +500,43 @@ out += ["", "## Incident 2 — collection round of 2026-09-10 (`evidence/inciden
         "(17.11 s versus 17.58 s at the same size), and inflating an agent's context by "
         "asking it to read files (one such turn added 851 tokens)", ""]
 OUT.parent.mkdir(parents=True, exist_ok=True)
-OUT.write_text("\n".join(out))
-print(f"\nwrote {OUT.relative_to(EV.parent)}")
+# The stamp records when the content last changed, not when the script last ran: a verification
+# run must not make the working tree dirty, which is what preflight.sh's clean-tree check relies
+# on. The hash covers the whole document, footer excluded, so two copies with the same hash hold
+# the same statistics whatever their stamps say.
+body = "\n".join(out).rstrip("\n")          # canonical: trailing newlines are not part of the content
+content_sha = hashlib.sha256(body.encode()).hexdigest()
+previous = OUT.read_text(errors="replace") if OUT.exists() else ""
+MARKER = "\nContent hash `sha256:"
+idx = previous.rfind(MARKER)
+previous_body = previous[:idx].rstrip("\n") if idx != -1 else None
+keep_stamp = previous_body is not None and hashlib.sha256(previous_body.encode()).hexdigest() == content_sha
+if not keep_stamp:
+    OUT.write_text(body + f"\n\nContent hash `sha256:{content_sha}` - generated "
+                          f"{datetime.now():%Y-%m-%d %H:%M:%S} - rerun: "
+                          "`python3 scripts/analyze.py`\n")
+print(f"\nwrote {OUT.relative_to(EV.parent)}" if not keep_stamp else
+      f"{OUT.relative_to(EV.parent)} unchanged (content hash matches, stamp kept)")
+# ---- a count quoted in the documents must equal this run's count ----
+# The dated-measurement rule above keeps a quoted number from going stale silently; this keeps
+# it from being wrong. Deliberately only in the source repository: a data-layer checkout skips
+# the checks that read the paper and the case report, so its smaller total is correct behaviour,
+# not drift. Printed as a note rather than a PASS line, so "how many assertions passed" keeps
+# meaning "how many check() calls succeeded" and nothing else.
+if NARRATIVES:
+    quoted = {doc.name: [int(m.group(1)) for m in
+              re.finditer(r"\b(\d+) assertions pass", doc.read_text(errors="replace"))]
+              for doc in PUB_DOCS}
+    wrong = {name: nums for name, nums in quoted.items()
+             if any(n != checks_done for n in nums)}
+    if wrong:
+        fails.append("documented assertion count")
+        print(f"  FAIL {wrong} quoted in the documents, but this run performed {checks_done} "
+              f"checks - update the number where it is quoted", file=sys.stderr)
+    elif any(quoted.values()):
+        print(f"  note: the assertion count quoted in the documents equals this run "
+              f"({checks_done} checks)")
+
 if fails:
     print(f"FAILED: {fails}", file=sys.stderr)
     sys.exit(1)

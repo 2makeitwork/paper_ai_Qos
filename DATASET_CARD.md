@@ -85,17 +85,19 @@ file with the working tree: **34 of its 36 files were byte-identical** (measured
 repository's commit history shows which revision that was). The two exceptions are
 known and intended — the hub's own `.gitattributes`, created with the repository, and
 `README.md`, which is this card with three lines of internal instruction removed (the source
-repository's `README.md` is a different document, its homepage). One caveat if you re-run the
-shipped scripts: the last line of `analysis/summary_tables.md` carries a generation timestamp,
-so that file moves on every run — a difference in when it was built, not in what it says.
+repository's `README.md` is a different document, its homepage). The generated table ends with
+a line carrying a content hash and a second-precision timestamp: the hash is what a machine
+compares, the time is what a person reads, and when the statistics are unchanged the script
+leaves the file alone — so running the checks cannot dirty a checkout or produce new bytes, and
+two copies with the same hash hold the same statistics whatever their stamps say.
 (Incidental finding for anyone scripting the client: `hf download --include` accepts repeated
 patterns but only honoured the last one, so pass one pattern per invocation.)
 
 Both scripts were then executed **inside that download**, with nothing else present:
-`scripts/verify_dataset_card.py` exits 0 and `scripts/analyze.py` passes 52 assertions against
-`evidence/`. The cross-document drift check between the paper and the case report prints an
-explicit skip there, because the narratives live in the source repository — a skip, never a
-silent pass.
+`scripts/verify_dataset_card.py` exits 0 and `scripts/analyze.py` prints a PASS line per check
+and fails none. Its count is lower there than in the source repository, because the checks that
+compare the paper with the case report have nothing to read: they print an explicit skip, never
+a silent pass.
 
 ### Composition
 
@@ -141,7 +143,7 @@ Two independent checks, one offline and one after upload:
 python3 scripts/verify_dataset_card.py           # every declared file exists, every
                                                  # declared column matches its header,
                                                  # row counts match the card text
-python3 scripts/analyze.py                       # asserts all 50 published figures
+python3 scripts/analyze.py                       # re-derives and asserts every published figure
 ```
 
 ```bash
@@ -211,10 +213,14 @@ recovered from these files.
 ## Uses
 
 ```bash
-python3 scripts/analyze.py          # asserts all 50 published figures against evidence/
-python3 scripts/latency_from_logs.py raw_snapshots/<stamp>/logs \
-        --since 2026-09-10T00:00 --emit-csv /tmp/round.csv    # rebuild a round
+python3 scripts/analyze.py          # re-derives and asserts every published figure from evidence/
 ```
+
+The log-side tools are source-repository material and are **not published here**:
+`scripts/collect_evidence.sh` and `scripts/latency_from_logs.py` need the raw client logs, which
+carry local paths and real conversation identifiers and are never distributed. What does ship
+here re-runs from these files, and `methodology.md`, "What re-runs, and from what", states the
+boundary honestly rather than implying a full rebuild.
 
 Use it to reuse the event schema, to check the paper's arithmetic, to compare your
 own provider against the method, or as training data for nothing at all — see

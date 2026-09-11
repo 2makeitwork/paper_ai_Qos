@@ -39,8 +39,20 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def _tracked() -> set[str] | None:
-    """The paths git tracks in this checkout, or None when it is not a repository."""
+    """The paths git tracks in this checkout, or None when it is not a repository root.
+
+    The root test matters: `git ls-files` lists what is tracked *under the current
+    directory*, so asking it from a staging directory inside this repository (which is how
+    the data layer is built and then checked) returns nothing at all - and an empty set
+    would make every published script look unpublished. Anywhere that is not the top level
+    of its own repository falls back to file presence, which is what the published data
+    layer (no git at all) gets.
+    """
     try:
+        prefix = subprocess.run(["git", "-C", str(ROOT), "rev-parse", "--show-prefix"],
+                                capture_output=True, text=True, timeout=30)
+        if prefix.returncode != 0 or prefix.stdout.strip():
+            return None
         run = subprocess.run(["git", "-C", str(ROOT), "ls-files"],
                              capture_output=True, text=True, timeout=30)
     except (OSError, subprocess.SubprocessError):
@@ -137,9 +149,9 @@ def tracked_or_present(rel: str) -> bool:
     """Does this path belong to the *published* set?
 
     Testing the disk is not enough - `tools/` sits on this workstation and is deliberately
-    never published, which is precisely how an unrunnable instruction survived review. Where
-    the checkout is a git repository, ask git what is tracked; otherwise (the published data
-    layer has no git) fall back to file presence.
+    never published, which is precisely how an unrunnable instruction survived review. At the
+    root of a git checkout, ask git what is tracked; elsewhere (a staging directory, or the
+    published data layer, which has no git) fall back to file presence.
     """
     if GIT_TRACKED is not None:
         return rel in GIT_TRACKED
