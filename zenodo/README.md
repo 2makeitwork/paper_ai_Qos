@@ -29,8 +29,13 @@ places that are written by three different commands, so the order matters:
 5. Publish. This is the only irreversible step, and it is deliberately a separate act.
 
 Performed in this order on 2026-09-11: tag `v0.3.0-pre` at commit `8f96c47`, then both published
-copies brought to it — the checker reports **36 of 36 files matching in the dataset repository and
-36 of 36 in this draft, no findings**, 732,485 bytes.
+copies brought to it — the checker reports no findings. Correcting an overstated reproducibility
+claim the same morning produced `v0.3.0-pre.2` at commit `c711118`, which **supersedes** the first
+tag rather than moving it: a pushed tag is left where it is, because rewriting a reference someone
+else may have fetched costs more than an extra tag. Both published copies and this draft now sit at
+`v0.3.0-pre.2` — **36 files, 744,463 bytes, no findings against the tag, served text clean** — and
+the GitHub release `v0.3.0-pre.2` exists as a **draft**, because a draft release is not archived and
+Zenodo's GitHub integration has to be enabled on the author's account before the release is published.
 
 **Authorship, decided 2026-09-11.** The creator is `2makeitwork` with an **empty affiliation**, and the
 record's `notes` field says so in words: the author is an independent, unaffiliated individual, and no
@@ -57,14 +62,16 @@ a draft revised today and published next week does not archive today's date.
    there too — only publishing is irreversible, and publishing needs a separate explicit flag (`--publish`,
    which additionally requires the `deposit:actions` token scope). What the sandbox would have caught,
    and did catch after the fact, is the endpoint mismatch described in step 2.
-2. `export ZENODO_TOKEN=…` then `./zenodo/deposit.sh` (sandbox), or
-   `ZENODO_HOST=https://zenodo.org ./zenodo/deposit.sh --allow-production`. It creates a draft, attaches
-   `deposit-dataset.json` as metadata and uploads the payload file by file, and **does not publish**
-   unless `--publish` is also given.
+2. `export ZENODO_TOKEN=…` then `python3 zenodo/sync_draft.py --record <id> --ref <tag> --metadata`
+   to bring an existing draft to a tag, or `./zenodo/deposit.sh` to create one. Files are staged by
+   `scripts/build_data_layer.py`, which owns the payload manifest — the same list
+   `scripts/check_release_sync.py` compares, so staging, checking and publishing cannot disagree.
+   Neither command publishes anything unless `--publish` is passed to `deposit.sh`.
    *Endpoints, verified against record 22699009:* the documented legacy route
    `/api/deposit/depositions/{id}/files` answers `400` on the current site and `files-archive` answers
    `405`; what works is `/api/records/{id}/draft/files` — init with a **list** of `{"key": …}` objects,
-   PUT the bytes to each entry's `links.content`, then POST each `links.commit`.
+   PUT the bytes to each entry's `links.content`, then POST each `links.commit`, and DELETE a key
+   before re-adding it when its content changed.
 3. Fill every key under `_fill_in_before_deposit` and delete that key before submitting.
    One of its former entries ("`creators[].affiliation` if you want one") was removed on 2026-09-11:
    the answer is that no affiliation is wanted, by decision.
