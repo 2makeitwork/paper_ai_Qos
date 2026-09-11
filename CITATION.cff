@@ -20,7 +20,9 @@ type: dataset
 version: "1.0.2"    # matches the tag v1.0.2, the citable snapshot; the release gate and scripts/analyze.py both refuse if the two differ
 date-released: "2026-09-11"   # the release date of this version
 doi: 10.5281/zenodo.22701430   # concept DOI — all archived versions, from Zenodo's GitHub integration
-# Version identifiers: v1.0.0 = 10.5281/zenodo.22701431, v1.0.1 = 10.5281/zenodo.22701701.
+# Version identifiers: v1.0.0 = 10.5281/zenodo.22701431, v1.0.1 = 10.5281/zenodo.22701701,
+# v1.0.2 = 10.5281/zenodo.22702952. Verified 2026-09-11: the concept identifier resolves to whichever
+# archived version is newest, which is why it is the one to cite.
 # Cite the concept identifier unless a specific archived version matters.
 # dataset-doi: none — no separate evidence deposit exists (the draft was discarded 2026-09-11).
 # The evidence is preserved by the dataset repository and by the archived source copies above.
@@ -56,6 +58,8 @@ identifiers:
     value: 10.5281/zenodo.22701431   # version DOI of v1.0.0
   - type: doi
     value: 10.5281/zenodo.22701701   # version DOI of v1.0.1
+  - type: doi
+    value: 10.5281/zenodo.22702952   # version DOI of v1.0.2, the current version
 # Release history. A list is kept in comments because CITATION File Format 1.2 defines no `versions`
 # key (checked against the official schema on 2026-09-11: the allowed top-level keys are abstract,
 # authors, cff-version, commit, contact, date-released, doi, identifiers, keywords, license,
