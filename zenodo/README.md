@@ -23,9 +23,12 @@ places that are written by three different commands, so the order matters:
 2. Commit, push, tag.
 3. Rebuild the published copies **from the tag**: upload the data-layer payload to the dataset
    repository, and synchronise the Zenodo draft key by key.
-4. Measure, do not assert: `python3 scripts/check_release_sync.py --ref <tag> --zenodo-draft <id>`
-   (or `--zenodo <record id>` once published). Exit 0 means every file's hash agrees in all three
-   places.
+4. Measure, do not assert: `./scripts/preflight.sh --release <tag>`. That is the single entry
+   point — it runs the assertions, the card check, the document gate, the tracked-set and identity
+   checks, the payload staging, and then `scripts/check_release_sync.py` against the tag and (with
+   `ZENODO_TOKEN` set) the draft record. Exit 0 means every file's hash agrees in all three places
+   and nothing in the served text is addressed to the maintainer. Plain `./scripts/preflight.sh`
+   runs the offline part anywhere.
 5. Publish. This is the only irreversible step, and it is deliberately a separate act.
    The GitHub release note is authored in `RELEASE_NOTES.md` and applied with
    `gh release edit <tag> --notes-file RELEASE_NOTES.md`, so the text a stranger reads is a

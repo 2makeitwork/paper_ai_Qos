@@ -68,22 +68,41 @@ consecutive transitions gives time-to-first-chunk and generation time per turn
 | `scripts/analyze.py` | recomputes every number quoted in the report from `evidence/` alone and asserts them; regenerates `analysis/summary_tables.md` |
 | `scripts/latency_from_logs.py` | turns the client's phase-transition and context-occupancy log lines into a per-request lifecycle table (wait for first streamed chunk, turn total, send-to-stall, first-chunk-to-stall, timeout versus dialog park, tokens at send); `--since` scopes a collection round to its own incident |
 | `scripts/verify_dataset_card.py` | checks `DATASET_CARD.md` against the files it declares — config paths exist, tables are well-formed, stated row counts are true, required card sections present; run before any upload |
+| `scripts/preflight.sh` | **the one command to remember.** Runs every gate in this repository in one ordered pass — assertions, card, document hygiene, tracked-set privacy, payload staging, commit identity, published history and, in `--release <tag>` mode, the three-way byte and text comparison — then prints `READY` or `NOT READY TO PUBLISH` with the reason, and the remaining manual steps in order. Writes nothing, uploads nothing |
 | `scripts/check_release_sync.py` | compares the published data layer, file by file and hash by hash, across the working tree (or a tag), the Hugging Face dataset repository and a Zenodo record — the three update independently, so drift is the default state and this is how it is measured rather than assumed (`--ref v0.3.0-pre.2`, `--zenodo <record>`, `--zenodo-draft <id>` with a token). It also scans the **served text** for maintainer instructions, because fixing a document locally is not the same as fixing what the hub hands out |
 | `scripts/build_data_layer.py` | stages exactly the files the data layer is defined to contain, from the working tree or a tag, and refuses to produce a partial or misplaced payload. One manifest (`PAYLOAD` in `check_release_sync.py`) feeds the upload, the archive deposit and the comparison, so the published set cannot be assembled three different ways |
 | `scripts/log_mirror.py` | (local-only, gitignored output) append-only mirror of the live IDE logs into `logs_mirror/`, capturing each file as it rotates out and SHA-256-verifying committed regions to flag in-place tampering; run every minute by the user timer pair in `scripts/systemd/` (`qoder-log-mirror.timer` → `qoder-log-mirror.service scan --once`), and `snapshot` for a checksummed frozen tree |
 | `analysis/summary_tables.md` | the derived statistics, as generated |
 | `scripts/watcher/` | (local-only, gitignored output) `cdp_watch.js` DOM watcher over CDP — render-side candidate signals; since 2026-09-09 the log phase stream (§4.7) is the primary timing instrument and this is the cross-check (see the false-positive note in its header) |
-| `tools/` | (local-only, gitignored) adapted doc index + the mandatory pre-publication gate `verify_docs.py` |
+| `tools/` | (local-only, gitignored) the document index and `verify_docs.py` (links, personal-data audit, ignore hygiene), both run by `scripts/preflight.sh` |
 
 ## Verify this repository yourself
 
 ```bash
-python3 tools/gen_doc_index.py && python3 tools/verify_docs.py  # links, PII audit, ignore hygiene
-python3 scripts/analyze.py                          # asserts all report numbers against evidence/
+python3 scripts/analyze.py                  # re-derives and asserts every published figure
+python3 scripts/verify_dataset_card.py      # checks the card against the files it declares
+python3 scripts/check_release_sync.py --ref v0.3.0-pre.2   # optional, needs network: compares
+                                            # the served dataset repository with the tag
 ```
 
-A rebuild of the evidence tree requires a machine with the same installation
-(see `methodology.md` for exact source paths); timestamps in the evidence are
+## Before publishing anything (the author's one command)
+
+```bash
+./scripts/preflight.sh                    # nine offline checks: claims, documents, tracked set, identity
+./scripts/preflight.sh --release <tag>    # the same, plus: does the published data layer agree
+                                          # with the tag you are about to release?
+```
+
+It runs every gate in the repository in one ordered pass and prints `READY` or
+`NOT READY TO PUBLISH`, naming what failed. It never writes, uploads or publishes, and in
+release mode it prints the remaining manual steps in the order they have to happen — the
+steps are public or irreversible, which is exactly why they are not automated. The checks
+exist because things passed review and were wrong; the list is in `zenodo/README.md`
+and the reasons in the commit messages.
+
+Rebuilding the evidence tree needs a machine with the same installation and the same
+frozen raw dump: `methodology.md` section "What re-runs, and from what" states which of
+these claims were tested and what the attempt produced. Timestamps in the evidence are
 local time (AWST, UTC+8).
 
 ## Scope and honesty notes
