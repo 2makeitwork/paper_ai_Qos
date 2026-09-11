@@ -81,7 +81,7 @@ consecutive transitions gives time-to-first-chunk and generation time per turn
 ```bash
 python3 scripts/analyze.py                  # re-derives and asserts every published figure
 python3 scripts/verify_dataset_card.py      # checks the card against the files it declares
-python3 scripts/check_release_sync.py --ref v0.3.0-pre.2   # optional, needs network: compares
+python3 scripts/check_release_sync.py --ref <tag>    # optional, needs network: compares
                                             # the served dataset repository with the tag
 ```
 

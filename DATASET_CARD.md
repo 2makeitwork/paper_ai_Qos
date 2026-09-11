@@ -80,24 +80,24 @@ recomputed from these files rather than taken on trust.
 
 ### Verification after publication
 
-The whole published repository was downloaded back to an empty directory and compared file by
-file with the working tree: **34 of its 36 files were byte-identical** (measured 2026-09-11; the
-repository's commit history shows which revision that was). The two exceptions are
-known and intended — the hub's own `.gitattributes`, created with the repository, and
-`README.md`, which is this card with three lines of internal instruction removed (the source
-repository's `README.md` is a different document, its homepage). The generated table ends with
-a line carrying a content hash and a second-precision timestamp: the hash is what a machine
-compares, the time is what a person reads, and when the statistics are unchanged the script
-leaves the file alone — so running the checks cannot dirty a checkout or produce new bytes, and
-two copies with the same hash hold the same statistics whatever their stamps say.
-(Incidental finding for anyone scripting the client: `hf download --include` accepts repeated
-patterns but only honoured the last one, so pass one pattern per invocation.)
+The whole published repository was downloaded back into an empty directory and compared file by
+file with the tag it was built from — which is exactly what `scripts/check_release_sync.py` does,
+so this is re-checkable by a reader rather than autobiographical. Measured 2026-09-11 against tag
+`v0.3.0-pre.4`: **every data-layer file agrees byte for byte**, `README.md` included — that file
+is this card with its three internal-instruction lines removed, and the source repository's own
+`README.md` is a different document, its homepage. The hub holds one file no tag contains: the
+`.gitattributes` it created with the repository. The generated table ends with a line carrying a
+content hash and a second-precision timestamp: the hash is what a machine compares, the time is
+what a person reads, and when the statistics are unchanged the script leaves the file alone — so
+running the checks cannot dirty a checkout or produce new bytes, and two copies with the same hash
+hold the same statistics whatever their stamps say. (Incidental finding for anyone scripting the
+client: `hf download --include` accepts repeated patterns but only honoured the last one, so pass
+one pattern per invocation.)
 
 Both scripts were then executed **inside that download**, with nothing else present:
-`scripts/verify_dataset_card.py` exits 0 and `scripts/analyze.py` prints a PASS line per check
-and fails none. Its count is lower there than in the source repository, because the checks that
-compare the paper with the case report have nothing to read: they print an explicit skip, never
-a silent pass.
+`scripts/verify_dataset_card.py` exits 0, and `scripts/analyze.py` fails nothing — printing a skip
+for the checks that compare the paper with the case report, since those narratives live in the
+source repository and their absence is announced rather than passed over as a pass.
 
 ### Composition
 

@@ -78,6 +78,12 @@ step "the published history carries no forbidden paths"       bash -c '
 
 if [[ -n "$REF" ]]; then
   echo "=== 4. release mode: what has to agree with $REF ==="
+  step "CITATION.cff names this tag as the citable snapshot" python3 -c "
+import re, sys
+found = re.search(r'^version: \"([^\"]+)\"', open('CITATION.cff').read(), re.M).group(1)
+if found != sys.argv[1]:
+    print(f'CITATION.cff says version {found}, this release is {sys.argv[1]}'); sys.exit(1)
+" "${REF#v}"
   behind="$(git rev-list --count "$REF"..HEAD 2>/dev/null || echo '?')"
   if [[ "$behind" != "0" ]]; then
     warn "$REF is $behind commit(s) behind main; the release note, the builder or a gate may"

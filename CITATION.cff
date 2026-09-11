@@ -15,7 +15,7 @@ authors:
     # affiliation is to be added here or in any listing, archive record or citation form
     # Do not attempt to resolve the handle to a person.
 type: dataset
-version: "0.3.0-pre.2"    # matches the tag v0.3.0-pre.2; pre-release, definitions may still move
+version: "0.3.0-pre.4"    # matches the tag v0.3.0-pre.4, the newest citable snapshot; scripts/preflight.sh --release <tag> refuses if they differ
 date-released: "2026-09-11"   # last revision of the document set, not a release date
 # doi: ""                 # dataset DOI, then paper-page DOI
 repository-code: "https://github.com/2makeitwork/paper_ai_Qos"
@@ -24,7 +24,7 @@ license: >-
   CC-BY-4.0 (text, tables, figures and evidence data; see LICENSE-content.md);
   MIT (executable tooling under scripts/; see LICENSE-code.md)
 # A commit hash cannot be written into the commit it names, so the snapshot to cite is the
-# tag: v0.3.0-pre.2. Zenodo's GitHub integration mints the version DOI from the release page.
+# tag: v0.3.0-pre.4. Zenodo's GitHub integration mints the version DOI from the release page.
 keywords:
   - AI service quality
   - large language model service measurement
@@ -43,6 +43,13 @@ preferred-citation:
   # url: "https://huggingface.co/papers/..."   # paper page once published
   institution: "Independent"
 versions:
+  - date-released: "2026-09-11"
+    version: "0.3.0-pre.4"
+    changes: "Pre-release line. Methodology v0.1 with Case Study 1: paper section 1.4 rebuilt as a
+      category table, the model-authenticity works recorded as considered-and-not-cited, the
+      capability-versus-delivery asymmetry stated in section 1.1, an unaffiliated byline, dated
+      pre-release notices, and a release gate (scripts/preflight.sh) that checks the published
+      artifact rather than the author's working copy"
   - date-released: "2026-09-10"
     version: "0.2.0"
     changes: "Round 2 collection: evidence/incident_20260910/ (62 request episodes, per-request context occupancy, the compaction pair and three negative results)."
