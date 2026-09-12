@@ -1,22 +1,23 @@
 # AI Service QoS — Independent Measurement of What Users Actually Receive
 
-Whether a model is good enough shows itself in a day of use. Whether the service behind it will
-answer — in time, for the work actually being attempted, on the day it matters — shows itself very
-unevenly: neither a capability leaderboard nor a provider status page reports it, and one banner
-text, "Response timeout", covered both requests that were merely slow and requests that were too
-large for the service's own declared input limit. This repository measures that second thing, the
-**quality of service (QoS)** an AI service actually delivers, one submitted request at a time,
-read out of the client's own log.
+Qwen3.8-Max is the example in this repository, not the subject. The subject is a method for measuring
+**quality of service (QoS)**: what the service around a model actually does with a user's work.
+Whether it answers. How long the first streamed chunk takes. What it tells you when it fails.
 
-Two questions decide whether any of this is worth your time, and they are the two a buyer or an
-operator of an AI service ends up asking: *if I give this service my real work, how often do I get
-a usable result?* and *what happens when the service is under load, when context gets large, when
-quota is approached, or when the provider degrades?* If either is a question you recognise, the
-[paper](paper_ai_QoS.md) below is the method and what one incident answered. If neither is,
-nothing here is for you.
+You learn within a day whether a model is clever enough. You never learn whether the service behind
+it will answer, and nothing published tells you either: no leaderboard scores it, no status page
+covers it. When it fails, one banner covers two different problems — "Response timeout", for a
+request that was merely slow and for one far too large. Internet access had that same hole until
+somebody measured it from the user's side. An internet service provider still advertises a speed
+"measured under controlled conditions", but what a household can consult is an independent
+measurement, broken out by provider, technology, region and hour. AI services have no such number,
+and [section 7.1](paper_ai_QoS.md) argues they should.
 
-**Case Study 1** — Qwen3.8-Max — is the worked example that makes the method concrete, not the
-thing under measurement.
+Two questions decide whether the rest of this page is yours, the two you end up asking if you buy or
+run an AI service: *how often does real work come back usable?*, and *what does that rate do under
+load, at large context, near quota, or during a degradation?* If neither is yours, stop here. If
+either is, the [paper](paper_ai_QoS.md) holds the method and the answers, counted one submitted
+request at a time out of the log the client already writes. Nothing was asked of the provider.
 
 **Author:** 2makeitwork — independent, unaffiliated.
 
@@ -33,21 +34,26 @@ thing under measurement.
 
 ## What this repository contributes
 
-**The [paper](paper_ai_QoS.md) is the contribution.** It specifies a request-level method for
-measuring the quality of service an artificial-intelligence service actually delivers to a user:
-the unit of observation, a latency distribution rather than a mean, a six-class outcome taxonomy
-that keeps the provider's own codes beside it, explicit denominators, retry accounting that
-refuses to hide retries inside successes, a task taxonomy following real work, and a
-machine-readable event schema — all defined independently of any provider's vocabulary, so results
-are comparable across services and verifiable without a provider's cooperation.
+**The [paper](paper_ai_QoS.md) is the contribution.** It measures what an AI service gives a user, in
+a way someone else can run against another provider and compare. Seven decisions define it:
 
-The novelty is one of **perspective, not of method**. The instruments are shared with prior
-external measurement of model services, and [section 1.4](paper_ai_QoS.md) names who and how this
-differs. What none of that work occupies is the vantage: a reading taken on the paying user's side,
-published as a stratified public aggregate, which checks what a provider *delivered* rather than
-ranks what a system *computes*. [Section 7.1](paper_ai_QoS.md) states the institution that serves
-— a public, user-side measure of AI-service delivery — with broadband performance reporting as its
-working analogue.
+- the unit of count is one submitted request, not a session or a token stream;
+- time is a distribution, never a mean, because a mean buries the tail;
+- each ending gets one of six labels, with the provider's own error code kept beside it;
+- every percentage names what it is out of;
+- a retry is never counted as a success;
+- work is sorted by what the user was trying to finish;
+- every event is written to a machine-readable schema.
+
+None of it borrows a provider's vocabulary, which is why two services can be compared and why a
+stranger can check the numbers without the provider's help.
+
+The instruments are not new: measuring a service from outside is an old trade, and
+[section 1.4](paper_ai_QoS.md) says who does what. What nobody occupies is the seat. Nobody else
+reads a paying user's log and publishes what it says, broken out by task and by hour. A leaderboard
+ranks what a system computes; this checks what a provider delivered. [Section 7.1](paper_ai_QoS.md)
+sets out the institution that would make the internet-service-provider comparison real: a public
+measure of AI-service delivery.
 
 Everything else here is a **means** to that end, and is labelled as such:
 
@@ -59,22 +65,23 @@ Everything else here is a **means** to that end, and is labelled as such:
 | **means** | [`methodology.md`](methodology.md), [`anonymization.md`](anonymization.md) | detection anchors, provenance, what re-runs from what, the scrubbing policy |
 | **means** | [`scripts/`](scripts/) | the collector, the anonymiser, and the checks that re-derive and assert every published figure |
 
-**Case Study 1** is the first system measured, not the subject: Qwen3.8-Max through the Qoder CN
-integrated development environment and Alibaba Cloud Model Studio, over a ten-day field incident.
-Its headline, in one paragraph rather than twenty — the report has the detail: a model registry
-offering 1M-context presets for an entry whose own declared input limit is 180,000 tokens;
-oversized requests failing as opaque "Response timeout" banners (client error code 80408) while the
-service's own `80411 "Input content too long"` code never fired once; the resume button
-re-submitting the identical request; and the whole loop deterministic within a burst but intermittent
-across time, which is a fixed client watchdog meeting time-varying server latency — context size
-raising the odds, never acting as a hard gate.
+**Case Study 1** is the first system run through the method: Qwen3.8-Max, through the Qoder CN
+integrated development environment and Alibaba Cloud Model Studio, over ten days of one person's real
+work. The finding in four lines, where the report spends twenty:
 
-Three independent log streams make the account checkable rather than anecdotal: the banner events,
-the client's own task tracker (whose `ActionRequired` state arrives within 234 ms of each banner,
-report §4.6 — and whose `task` names one chat *conversation*, not one chat box, report §3.1), and
-the per-interaction phase stream (report §4.7), which timestamps every send, first streamed chunk,
-tool dialog, banner, resume click and turn-over. That is how a user-side measurement gets a
-latency distribution instead of a complaint.
+- The registry offered 1M-context presets for an entry whose own declared input limit is 180,000
+  tokens.
+- Requests over the limit came back as "Response timeout" (client code 80408). The service's own code
+  for that condition, `80411 "Input content too long"`, fired zero times.
+- The resume button re-submitted the identical request: the same bytes into the same wall.
+- Predictable inside a burst, random across days — a fixed client watchdog meeting a server latency
+  that moves. Context size raised the odds; it never gated.
+
+Three log streams carry that, not memory: the banner events; the client's own task tracker, which
+reached `ActionRequired` within 234 ms of every banner (report §4.6) and whose `task` names a chat
+conversation, not a chat box (report §3.1); and the phase stream (report §4.7), timestamping every
+send, first streamed chunk, tool dialog, banner, resume click and turn end. Three clocks on one event
+is what turns a complaint into a latency distribution.
 
 ## Layout
 
@@ -99,7 +106,11 @@ latency distribution instead of a complaint.
 | `scripts/check_release_sync.py` | compares the published data layer, file by file and hash by hash, across the working tree (or a tag), the Hugging Face dataset repository and a Zenodo record — the three update independently, so drift is the default state and this is how it is measured rather than assumed (`--ref <tag>`, `--zenodo <record>`, `--zenodo-draft <id>` with a token). It also scans the **served text** for maintainer instructions, because fixing a document locally is not the same as fixing what the hub hands out |
 | `analysis/summary_tables.md` | the derived statistics, as generated |
 
-The capture and shipping pipeline — the collector that reads the installation, the tamper-evident log mirror and its systemd timers, the DOM watcher cross-check, the release gate and the payload builders — is the project's own tooling and is not published here. `methodology.md` states what each instrument did, and the complete pipeline is preserved in the archived source copies cited under Cite this above, which is where a reader who needs the collector should look.
+The capture and shipping pipeline is not in this repository: the collector that reads the
+installation, the tamper-evident log mirror with its systemd timers, the browser-side cross-check
+watcher, the release gate, the payload builders. This is a public record of an observation, not a
+toolkit. `methodology.md` says what each instrument did, and the archived source copies under Cite
+this below carry the whole pipeline, so the collector stays reachable from a citation.
 
 ## Cite this
 
@@ -110,9 +121,9 @@ The capture and shipping pipeline — the collector that reads the installation,
 | The evidence, loadable | <https://huggingface.co/datasets/2makeitwork/paper_ai_Qos> |
 | A specific number | the commit that produced it, plus `python3 scripts/analyze.py`, which re-derives it from `evidence/` |
 
-`CITATION.cff` carries the same in machine-readable form, and the dataset card's Citation section
-states the rules: cite a snapshot not a branch, name the collection round, and cite the client
-version plus the service rather than the model alone.
+`CITATION.cff` carries the same for machines. The dataset card's Citation section gives the rules:
+cite a snapshot, not a branch; name the collection round; cite the client version and service, not
+the model alone, because a watchdog on your own desk is easy to misattribute to a model.
 
 ## Verify this repository yourself
 
@@ -123,11 +134,10 @@ python3 scripts/check_release_sync.py --ref <tag>    # optional, needs network: 
                                             # the served dataset repository with the tag
 ```
 
-Each of these checks exists because something passed review and was wrong; the reasons are in
-the commit messages. Rebuilding the evidence tree needs a machine with the same installation and
-the same frozen raw dump: `methodology.md`, "What re-runs, and from what", states which of these
-claims were tested and what the attempt produced. Timestamps in the evidence are local time
-(AWST, UTC+8).
+Every check above exists because something once passed review and was wrong; the reasons are in the
+commit messages. One limit: rebuilding the evidence tree needs the same machine, installation and
+frozen raw dump. `methodology.md`, under "What re-runs, and from what", records which claims were
+re-tested and what the attempt produced. Evidence timestamps are local time (AWST, UTC+8).
 
 ## Scope and honesty notes
 
